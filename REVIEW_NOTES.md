@@ -16,6 +16,32 @@ material resolves this**, so I left both numbers as they were rather than
 silently editing one to match the other. The Sample page states its own row
 count automatically, so fixing `sample_table.csv` fixes the page.
 
+## 1b. Subsample membership: 20 of 33 rows are not from a published list
+
+The `subsample` column of `sample_table.csv` was filled as follows.
+
+**Verified against the papers you gave.** Venturi et al. (2017) publishes the
+MAGNUM selection criteria (MR95 + R99 + Swift-BAT 70m, −70° < δ < 20°,
+D < 50 Mpc, 73 objects) but lists only the 10 galaxies analysed at the time; 7
+of those are in the table — Centaurus A, IC 5063, NGC 1068, NGC 1365, NGC 1386,
+NGC 2992, NGC 5643. Ruffa et al. (2019) Table 1 lists all 11 southern radio
+galaxies of that sample; 6 are in the table — IC 1459, IC 4296, NGC 1399,
+NGC 3100, NGC 3557 and Fornax A (NGC 1316). The other 5 Ruffa targets (IC 1531,
+NGC 612, PKS 0718−34, ESO 443-G 024, NGC 7075) are not in the MAGNHIFFIC table.
+
+**Assigned by AGN type, on your instruction.** The remaining 20 rows appear in
+neither published list, so they were assigned from the `agn_type` column:
+Seyfert rows to MAGNUM (NGC 1433, NGC 1808, NGC 1566, NGC 1097, NGC 1371,
+NGC 1672, NGC 0289, ESO 428-G14, NGC 5506, ESO 358-G063) and radio-loud rows to
+the radio-loud subsample (NGC 660, NGC 1052, NGC 2663, NGC 4261, NGC 5903,
+NGC 4696, NGC 5793, NGC 5090, NGC 3801, PKS 1718-649). **These 20 are not
+verified membership claims** — if the real MAGNUM 73-object list disagrees, edit
+the `subsample` cell and rebuild.
+
+Consequence: the "additional sample" you mentioned is currently empty, so no
+third group is rendered. Put `other` in the `subsample` cell of any row that
+belongs there and the group appears, with its own colour, after the other two.
+
 ## 2. Coordinates I corrected
 
 Three rows in the preliminary table were wrong; I checked all 33 against SIMBAD

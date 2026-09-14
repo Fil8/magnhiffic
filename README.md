@@ -73,9 +73,18 @@ The script regenerates `*.html` and the per-page `*.css` only. It does not touch
 you drop in there is safe.
 
 `sample_table.csv` columns: `name, ra, dec, dl_mpc, gal_type, agn_type,
-environment, ned_url`. Add or remove rows freely — the page and the plain-text
-export at `files/magnhiffic_sample.txt` both follow the file, and the intro text
-states the row count automatically.
+subsample, environment, ned_url`. Add or remove rows freely — the page and the
+plain-text export at `files/magnhiffic_sample.txt` both follow the file, and the
+intro text states the row count automatically.
+
+`subsample` drives the grouping and the cell colours on the Sample page. Allowed
+values are `magnum`, `radio_loud` and `other`; anything else falls into the last
+group. Rows are rendered group by group in the order given by `SAMPLE_GROUPS`
+and, inside each group, sorted by ascending `dl_mpc` — so moving a galaxy
+between subsamples is a one-cell edit plus a rebuild. A group with no rows is
+not rendered at all (that is why `other` is currently invisible). The three
+fills are `magnum_bg`, `radio_loud_bg` and `other_bg` in `THEME`; the group
+label rows use the same hues one step lighter, derived automatically.
 
 ## Fonts and colours
 

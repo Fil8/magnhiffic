@@ -66,3 +66,39 @@ section.u-palette-1-light-1:before { background-color: #79aad8; }
 .u-black,
 section.u-black:before,
 .u-black.u-sidenav:before { background-color: #000000; }
+
+/* ------------------------------------------- Sample table, by subsample */
+
+tr.u-sample-magnum     > td { background-color: #14395c; }
+tr.u-sample-radio_loud > td { background-color: #5c3a14; }
+tr.u-sample-other      > td { background-color: #2b2b2b; }
+
+/* Group label rows: same hue, one step lighter, left-aligned. */
+tr.u-sample-group.u-sample-magnum     > td { background-color: #486580; }
+tr.u-sample-group.u-sample-radio_loud > td { background-color: #806548; }
+tr.u-sample-group.u-sample-other      > td { background-color: #5a5a5a; }
+
+tr.u-sample-group > td {
+  font-family: Roboto, sans-serif;
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 1px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+tr.u-sample-group .u-sample-ref   { color: #ffffff; text-decoration: underline; }
+tr.u-sample-group .u-sample-count { font-weight: 400; opacity: 0.75; }
+
+/* Legend swatches in the intro paragraph. */
+.u-sample-key {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  vertical-align: -0.05em;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.u-sample-key-magnum     { background-color: #14395c; }
+.u-sample-key-radio_loud { background-color: #5c3a14; }
+.u-sample-key-other      { background-color: #2b2b2b; }
