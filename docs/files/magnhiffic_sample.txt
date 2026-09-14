@@ -1,0 +1,35 @@
+# MAGNHIFFIC sample (33 objects).  H0 = 67.8 km/s/Mpc
+# name             ra_j2000     dec_j2000     dl_mpc gtype  agn_type                           environment
+  IC 5063          20:52:02     -57:04:08       47.9 S0a    Seyfert & kpc-scale radio jet      Isolated 1 comp?
+  NGC 1068         02:42:41     -00:00:48       15.5 Sb     Seyfert & kpc-scale radio jet      Poor group (2 mem)
+  IC 1459          22:57:10.61  -36:27:44.0     24.2 E      RL kpc-scale radio jets            BGG (16 mem)
+  IC 4296          13:36:39     -33:57:57       51.2 E      RL 100 kpc radio jets              BCG of A3537
+  NGC 2992         09:45:42     -14:19:35       34.8 Sa     Seyfert & kpc jet                  Isolated (1 comp)
+  NGC 4261         12:19:23     05:49:29        32.1 E      RL 80 kpc jet & lobe 75 Myr FRI    Group (18 mem)
+  NGC 1052         02:41:05     -08:15:21       20.5 E      RL + kpc-scale jets                Group (4 mem)
+  NGC 1097         02:46:19     -30:16:30       18.6 Sb     Seyfert + kpc-scale jets           Poor Group (2 mem)
+  NGC 2663         08:45:08     -33:47:41       29.9 E      RL + 355 kpc jets                  Isolated
+  NGC 4696         12:48:49     -41:18:40       41.7 S0     RL + 10 kpc jets                   BCG (Centaurus cluster?)
+  NGC 660          01:43:02     13:38:44        12.4 Sb     GPS / restarted?                   Poor group (3 mem)
+  NGC 5903         15:18:37     -24:04:07       33.9 E      RL last activity: 360 Myr          Group (30 mem)
+  NGC 5506         14:13:15     -03:12:27       26.9 Sa     Seyfert                            Poor group
+  NGC 5090         13:21:13     -43:42:17       46.8 E      >10 kpc jets                       Group (5 mem)
+  NGC 1808         05:07:42     -37:30:47       15.6 Sab    Seyfert                            Group (4 mem)
+  NGC 5793         14:59:25     -16:41:36       46.2 E      Compact RS                         Isolated
+  NGC 3801         11:40:16.94  17:43:40.98     52.1 S0     FRI - 11 kpc jets                  Pour group + past merger
+  NGC 1433         03:42:01.55  -47:13:19.5     14.9 SBb    Seyfert 2                          NGC 1434 group
+  NGC 5643         14:32:40.74  -44:10:27.86    20.6 Sc     Seyfert 2                          Isolated (1 companion)
+  ESO 428-G14      07:16:31.21  -29:19:28.9     25.0 Sa     Seyfert 2                          BGG of group
+  Centaurus A      13:25:27.62  -43:01:08.81     3.4 S0     Seyfert 2 / RL restarted           BGG of group
+  NGC 3100         10:00:40.83  -31:39:52.35    38.5 S0     RL kpc jets / FRI                  BGG of group
+  NGC 3557         11:09:57.64  -37:32:20.96      44 E      RL 10 kpc jets / FRI               Poor group
+  PKS 1718-649     17:23:41.03  -65:00:36.62      59 S0     RL pc jets / young source          Isolated (max 1 comp >250 kpc)
+  NGC 1365         03:33:36.37  -36:08:25.45    19.6 Sc     Seyfert 1.8                        Numerous group of satellites
+  NGC 1386         03:36:46.18  -35:59:57.87    15.6 Sb     Seyfert 2                          A few smaller satellites
+  ESO 358- G 063   03:46:19.01  -34:56:36.8     27.8 Sd     Seyfert                            Edge of Fornax cluster
+  NGC 1399         03:38:29.03  -35:27:02.36    19.4 E      RL kpc jets                        BCG of Fornax cluster
+  Fornax A         03:22:41.72  -37:12:29.62    20.8 S0     RL restarted                       BGG of Fornax group
+  NGC 1566         04:20:00.42  -54:56:16.1     17.6 Sc     Seyfert 1.5                        Dorado group
+  NGC 1371         03:35:01.34  -24:55:59.64    20.4 Sa     Seyfert                            Eridanus Group member
+  NGC 1672         04:45:42.50  -59:14:49.85    20.5 SBc    Seyfert 2                          Dorado group (loose)
+  NGC 0289         00:52:42.37  -31:12:21.0     22.9 Sb     Seyfert                            NGC0134 group (loose)

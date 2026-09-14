@@ -1,0 +1,14 @@
+# sync_chrome.py backups
+*.bak
+*.orig
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*~
+.vscode/
+.idea/
+
+# python
+__pycache__/
+*.pyc
