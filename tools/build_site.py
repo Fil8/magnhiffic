@@ -97,8 +97,8 @@ LOGO_IMAGE = None
 
 # NOTE FOR REVIEW: the template credited ERC grant 882793 "MeerGas", which is the
 # MHONGOOSE-side grant. Replace the text below with MAGNHIFFIC's own funding
-# acknowledgement (and swap images/LOGO_ERC-FLAG_EUNEGATIF1.jpg + the erc.europa.eu
-# link in footer() if the funder differs).
+# acknowledgement if the funder differs. The ERC/EU flag logo has been removed
+# from the footer (see footer()).
 FUNDING = ('MAGNHIFFIC is supported by INAF \u2013 Istituto Nazionale di Astrofisica. '
            '[Funding acknowledgement to be completed \u2013 see REVIEW_NOTES.md]&nbsp;')
 
@@ -170,9 +170,6 @@ def footer():
     return """<!-- ==== SHARED FOOTER: identical on all pages. Edit here, then run sync_chrome.py (or rebuild). ==== -->
 <footer class="u-align-center u-black u-clearfix u-footer u-footer" id="sec-2012"><div class="u-clearfix u-sheet u-sheet-1">
         <div class="u-border-3 u-border-grey-dark-1 u-line u-line-horizontal u-line-1"></div>
-        <a href="https://erc.europa.eu/" class="u-image u-logo u-image-1" data-image-width="1160" data-image-height="511">
-          <img src="images/LOGO_ERC-FLAG_EUNEGATIF1.jpg" class="u-logo-image u-logo-image-1">
-        </a>
         <p class="u-align-left u-small-text u-text u-text-variant u-text-1"> %s<br>
         </p>
       </div></footer>
@@ -330,6 +327,19 @@ section.u-palette-1-light-1:before { background-color: %(accent_light)s; }
 .u-black,
 section.u-black:before,
 .u-black.u-sidenav:before { background-color: %(dark_bg)s; }
+
+/* Footer divider: the template sized this to leave room for the ERC/EU
+   logo beside it. The logo is gone (see footer() in build_site.py), so
+   the line now spans the full sheet width instead of the old fixed
+   pixel widths, and the funding text no longer indents to clear it. */
+.u-footer .u-line-1 {
+  width: 100%%;
+  margin: 4px 0 0;
+}
+
+.u-footer .u-text-1 {
+  margin: 12px 24px 17px 0;
+}
 
 /* ------------------------------------------- Sample table, by subsample */
 

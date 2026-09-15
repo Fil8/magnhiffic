@@ -67,6 +67,19 @@ section.u-palette-1-light-1:before { background-color: #79aad8; }
 section.u-black:before,
 .u-black.u-sidenav:before { background-color: #000000; }
 
+/* Footer divider: the template sized this to leave room for the ERC/EU
+   logo beside it. The logo is gone (see footer() in build_site.py), so
+   the line now spans the full sheet width instead of the old fixed
+   pixel widths, and the funding text no longer indents to clear it. */
+.u-footer .u-line-1 {
+  width: 100%;
+  margin: 4px 0 0;
+}
+
+.u-footer .u-text-1 {
+  margin: 12px 24px 17px 0;
+}
+
 /* ------------------------------------------- Sample table, by subsample */
 
 tr.u-sample-magnum         > td { background-color: #14395c; }
