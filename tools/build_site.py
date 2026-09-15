@@ -1689,6 +1689,27 @@ def sample_legend(groups):
     return "&nbsp;&nbsp;&nbsp;".join(items)
 
 
+def cutout_slug(name):
+    """Filename stem for a source's 0.5 deg RGB cutout. Shared (by
+    convention) with tools/fetch_cutouts.py, which is what actually
+    populates docs/images/cutouts/ -- run that script by hand after
+    editing sample_table.csv, then rebuild."""
+    return re.sub(r"[^A-Za-z0-9_-]", "", name.replace(" ", "_"))
+
+
+def cutout_link(name):
+    """'image' link to the source's cutout if one was fetched, else a dash.
+    Not every source has Legacy Survey coverage (a couple of fields in this
+    sample fall outside its footprint), so this is a plain existence check
+    rather than an assumption that every row has one."""
+    path = os.path.join(SITE, "images", "cutouts", cutout_slug(name) + ".jpg")
+    if not os.path.exists(path):
+        return "–"
+    return ('<a href="images/cutouts/%s.jpg" target="_blank" class="u-active-none '
+            'u-border-none u-btn u-button-link u-button-style u-hover-none u-none '
+            'u-text-hover-palette-1-base u-text-white">image</a>' % cutout_slug(name))
+
+
 def sample_table(groups):
     """groups: output of group_rows() — (key, label, ref, url, rows) tuples.
     Each row is a dict with name/ra/dec/dl_mpc/gal_type/agn_type/environment/
@@ -1697,7 +1718,7 @@ def sample_table(groups):
     sources rows, which carry an AGN-type class instead (see agn_class)."""
     head_cells = ["Name", "RA [J2000]", "Dec [J2000]",
                   "D<span style=\"font-size: 0.75rem;\">L</span> [Mpc]",
-                  "Galaxy type", "AGN type", "Environment"]
+                  "Galaxy type", "AGN type", "Environment", "Image"]
     ths = "".join('\n                <th class="u-border-1 u-border-grey-30 '
                   'u-table-cell">%s</th>' % c for c in head_cells)
     trs = ""
@@ -1719,7 +1740,8 @@ def sample_table(groups):
                       'u-hover-none u-none u-text-hover-palette-1-base '
                       'u-text-white">%s</a>' % (r["ned_url"], r["name"]))
             cells = [nm, r["ra"], r["dec"], r["dl_mpc"] or "\u2013",
-                     r["gal_type"], r["agn_type"], r["environment"]]
+                     r["gal_type"], r["agn_type"], r["environment"],
+                     cutout_link(r["name"])]
             tds = "".join('\n                <td class="u-border-1 '
                           'u-border-grey-30 u-table-cell">%s</td>' % c
                           for c in cells)
@@ -1728,7 +1750,7 @@ def sample_table(groups):
                     'style="height: 40px;">%s\n              </tr>' % (row_cls, tds))
     return """<table class="u-table-entity u-table-entity-1">
             <colgroup>
-              <col width="15%%"><col width="12%%"><col width="12%%"><col width="8%%"><col width="9%%"><col width="24%%"><col width="20%%">
+              <col width="14%%"><col width="11%%"><col width="11%%"><col width="7%%"><col width="8%%"><col width="20%%"><col width="17%%"><col width="12%%">
             </colgroup>
             <thead class="u-black u-table-header u-table-header-1">
               <tr style="height: 46px;">%s
