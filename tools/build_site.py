@@ -44,11 +44,17 @@ THEME = {
     "dark_bg":    "#000000",   # header bar, More Info band, footer
 
     # --- Sample-table subsample fills.  The table sits on the black band, so
-    #     these are dark tints that keep white text readable.  Blue vs amber
+    #     these are dark tints that keep white text readable.  Blue vs orange
     #     is the colour-blind-safe pair; change the hexes, not the pairing.
-    "magnum_bg":     "#14395c",   # MAGNUM subsample rows
-    "radio_loud_bg": "#5c3a14",   # radio-loud subsample rows
-    "other_bg":      "#2b2b2b",   # additional sources
+    "magnum_bg":     "#14395c",   # MAGNUM (Venturi et al. 2017) subsample rows
+    "radio_loud_bg": "#7a3d00",   # Ruffa et al. 2019 subsample rows (dark orange)
+    "other_bg":      "#2b2b2b",   # Additional sources group-label row (neutral)
+
+    # Additional sources are not from either reference sample, so their rows
+    # are tinted by AGN type instead of getting the group's own flat colour:
+    # lighter blue for Seyferts, lighter red for radio-loud sources.
+    "other_seyfert_bg":   "#3d6d92",   # lighter blue
+    "other_radioloud_bg": "#8a4646",   # lighter red
 }
 
 # Google Fonts to load, in the API's own syntax (family, then the weights you
@@ -327,9 +333,11 @@ section.u-black:before,
 
 /* ------------------------------------------- Sample table, by subsample */
 
-tr.u-sample-magnum     > td { background-color: %(magnum_bg)s; }
-tr.u-sample-radio_loud > td { background-color: %(radio_loud_bg)s; }
-tr.u-sample-other      > td { background-color: %(other_bg)s; }
+tr.u-sample-magnum         > td { background-color: %(magnum_bg)s; }
+tr.u-sample-radio_loud     > td { background-color: %(radio_loud_bg)s; }
+tr.u-sample-other          > td { background-color: %(other_bg)s; }
+tr.u-sample-other-seyfert  > td { background-color: %(other_seyfert_bg)s; }
+tr.u-sample-other-radioloud > td { background-color: %(other_radioloud_bg)s; }
 
 /* Group label rows: same hue, one step lighter, left-aligned. */
 tr.u-sample-group.u-sample-magnum     > td { background-color: %(magnum_head)s; }
@@ -357,9 +365,11 @@ tr.u-sample-group .u-sample-count { font-weight: 400; opacity: 0.75; }
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.u-sample-key-magnum     { background-color: %(magnum_bg)s; }
-.u-sample-key-radio_loud { background-color: %(radio_loud_bg)s; }
-.u-sample-key-other      { background-color: %(other_bg)s; }
+.u-sample-key-magnum         { background-color: %(magnum_bg)s; }
+.u-sample-key-radio_loud     { background-color: %(radio_loud_bg)s; }
+.u-sample-key-other          { background-color: %(other_bg)s; }
+.u-sample-key-other-seyfert  { background-color: %(other_seyfert_bg)s; }
+.u-sample-key-other-radioloud { background-color: %(other_radioloud_bg)s; }
 """ % t
     return write_css("theme.css", css)
 
@@ -1597,7 +1607,7 @@ SAMPLE_GROUPS = [
      "https://doi.org/10.3389/fspas.2017.00046"),
     ("radio_loud", "Radio-loud subsample", "Ruffa et al. (2019)",
      "https://ui.adsabs.harvard.edu/abs/2019MNRAS.484.4239R/abstract"),
-    ("other", "All other sources", None, None),
+    ("other", "Additional sources", None, None),
 ]
 
 
@@ -1641,18 +1651,40 @@ def sample_groups_sentence(groups):
     return txt
 
 
+def agn_class(agn_type):
+    """Additional-sources rows are tinted by AGN type rather than by their
+    (non-)membership in a reference sample: 'seyfert' for radiative-mode
+    AGN, 'radioloud' for jetted ones."""
+    return "seyfert" if "seyfert" in (agn_type or "").lower() else "radioloud"
+
+
 def sample_legend(groups):
-    """Inline colour key, one swatch per rendered group."""
-    items = ['<span class="u-sample-key u-sample-key-%s"></span>&nbsp;%s '
-             '(%d)' % (key, label, len(g)) for key, label, _r, _u, g in groups]
+    """Inline colour key. Most groups get one swatch; the Additional-sources
+    group is split into its Seyfert/radio-loud tints so the key matches the
+    two colours actually used in its rows."""
+    items = []
+    for key, label, _r, _u, g in groups:
+        if key == "other":
+            n_sey = sum(1 for r in g if agn_class(r["agn_type"]) == "seyfert")
+            n_rl = len(g) - n_sey
+            if n_sey:
+                items.append('<span class="u-sample-key u-sample-key-other-seyfert">'
+                             '</span>&nbsp;%s, Seyfert (%d)' % (label, n_sey))
+            if n_rl:
+                items.append('<span class="u-sample-key u-sample-key-other-radioloud">'
+                             '</span>&nbsp;%s, radio-loud (%d)' % (label, n_rl))
+        else:
+            items.append('<span class="u-sample-key u-sample-key-%s"></span>&nbsp;%s '
+                         '(%d)' % (key, label, len(g)))
     return "&nbsp;&nbsp;&nbsp;".join(items)
 
 
 def sample_table(groups):
     """groups: output of group_rows() — (key, label, ref, url, rows) tuples.
     Each row is a dict with name/ra/dec/dl_mpc/gal_type/agn_type/environment/
-    ned_url/subsample.  Every group gets a coloured label row, and its data
-    rows carry the group's class so theme.css can tint them."""
+    ned_url/subsample.  Every group gets a coloured label row. Data rows
+    carry the group's class so theme.css can tint them, except Additional
+    sources rows, which carry an AGN-type class instead (see agn_class)."""
     head_cells = ["Name", "RA [J2000]", "Dec [J2000]",
                   "D<span style=\"font-size: 0.75rem;\">L</span> [Mpc]",
                   "Galaxy type", "AGN type", "Environment"]
@@ -1681,8 +1713,9 @@ def sample_table(groups):
             tds = "".join('\n                <td class="u-border-1 '
                           'u-border-grey-30 u-table-cell">%s</td>' % c
                           for c in cells)
+            row_cls = ("other-" + agn_class(r["agn_type"])) if key == "other" else key
             trs += ('\n              <tr class="u-sample-%s" '
-                    'style="height: 40px;">%s\n              </tr>' % (key, tds))
+                    'style="height: 40px;">%s\n              </tr>' % (row_cls, tds))
     return """<table class="u-table-entity u-table-entity-1">
             <colgroup>
               <col width="15%%"><col width="12%%"><col width="12%%"><col width="8%%"><col width="9%%"><col width="24%%"><col width="20%%">
