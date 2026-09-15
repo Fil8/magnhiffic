@@ -1,7 +1,12 @@
 """Fetch 0.8 deg RGB cutouts from the Legacy Survey viewer for every source in
-sample_table.csv, burn in a 1 kpc scale bar (using each source's dl_mpc), and
-drop them in ../docs/images/cutouts/ for the Sample page's "DES(rgb)" column
-to link to.
+sample_table.csv, burn in two scale bars, and drop them in
+../docs/images/cutouts/ for the Sample page's "DES(rgb)" column to link to.
+
+Every cutout carries the same pixel scale, so an angular bar (ANGULAR_BAR_
+ARCSEC) comes out the same length in every image -- a fixed yardstick to
+compare fields by. A physical bar (PHYS_BAR_KPC, using each source's
+dl_mpc) instead varies image to image, showing the true kpc scale of each
+galaxy. Both are drawn stacked in the bottom-right corner.
 
 This is a one-off asset-acquisition step, run by hand when the sample
 changes -- NOT part of build_site.py's regular build, which stays
@@ -15,14 +20,6 @@ Sources outside the Legacy Survey footprint get a small flat placeholder
 image back instead of real imaging; anything under NO_COVERAGE_MAX_BYTES
 is treated as "no coverage" and skipped (observed placeholder size: 6404
 bytes, real cutouts here run well into six figures).
-
-CAVEAT: at this pixel scale (needed to cover 0.8 deg without an enormous
-image), 1 kpc is sub-5-pixel for every source beyond Centaurus A, and
-under 2 px past ~30 Mpc -- the bar is drawn at its true (rounded) length
-regardless, so for the more distant sources it will be little more than a
-tick mark. A distance-independent angular bar, or a larger fixed physical
-scale (e.g. 10 kpc), would stay legible across the whole sample if that
-turns out to matter more than literal 1 kpc.
 """
 import csv
 import os
@@ -49,7 +46,8 @@ NO_COVERAGE_MAX_BYTES = 20000
 # brightness. Source a Cen A image separately rather than re-fetching here.
 KNOWN_BAD = {"Centaurus A"}
 
-BAR_KPC = 1.0
+ANGULAR_BAR_ARCSEC = 30.0   # fixed length in every image (same pixel scale)
+PHYS_BAR_KPC = 10.0         # varies image to image (depends on dl_mpc)
 ARCSEC_PER_KPC_AT_1MPC = 206.265   # small-angle: 1 kpc subtends this many
                                     # arcsec at 1 Mpc; scales as 1/distance.
                                     # D_A is approximated as D_L (fine at
@@ -74,29 +72,33 @@ def dec_to_deg(s):
     return sign * (float(d) + float(m) / 60 + float(sec) / 3600)
 
 
-def draw_scale_bar(path, dl_mpc):
-    """Burn a 1 kpc scale bar into the bottom-right corner of the cutout at
-    path, sized from the source's luminosity distance."""
-    arcsec_per_kpc = ARCSEC_PER_KPC_AT_1MPC / dl_mpc
-    bar_px = max(1, round(BAR_KPC * arcsec_per_kpc / PIXSCALE))
-
-    im = Image.open(path).convert("RGB")
-    draw = ImageDraw.Draw(im)
-    w, h = im.size
-    margin = 24
-    y = h - margin
-    x2 = w - margin
+def _draw_one_bar(draw, w, y, bar_px, label, font):
+    x2 = w - 24
     x1 = x2 - bar_px
-
     draw.line([(x1, y), (x2, y)], fill="white", width=3)
     draw.line([(x1, y - 5), (x1, y + 5)], fill="white", width=3)
     draw.line([(x2, y - 5), (x2, y + 5)], fill="white", width=3)
-
-    label = "1 kpc"
-    font = ImageFont.load_default()
     bbox = draw.textbbox((0, 0), label, font=font)
     tw = bbox[2] - bbox[0]
     draw.text((x2 - tw, y - 20), label, fill="white", font=font)
+
+
+def draw_scale_bars(path, dl_mpc):
+    """Burn two stacked scale bars into the bottom-right corner of the
+    cutout at path: a fixed angular bar (same pixel length in every image,
+    since they share a pixel scale) and a physical bar sized from the
+    source's luminosity distance (varies image to image)."""
+    im = Image.open(path).convert("RGB")
+    draw = ImageDraw.Draw(im)
+    w, h = im.size
+    font = ImageFont.load_default()
+
+    arcsec_per_kpc = ARCSEC_PER_KPC_AT_1MPC / dl_mpc
+    phys_px = max(1, round(PHYS_BAR_KPC * arcsec_per_kpc / PIXSCALE))
+    ang_px = max(1, round(ANGULAR_BAR_ARCSEC / PIXSCALE))
+
+    _draw_one_bar(draw, w, h - 24, phys_px, "%g kpc" % PHYS_BAR_KPC, font)
+    _draw_one_bar(draw, w, h - 64, ang_px, '%g"' % ANGULAR_BAR_ARCSEC, font)
 
     im.save(path, "JPEG", quality=90)
 
@@ -123,7 +125,7 @@ def main():
             os.remove(path)
             skipped.append(name)
         else:
-            draw_scale_bar(path, float(r["dl_mpc"]))
+            draw_scale_bars(path, float(r["dl_mpc"]))
             kept.append(name)
         time.sleep(0.3)   # be polite to the cutout service
 
