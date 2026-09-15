@@ -1697,26 +1697,79 @@ def cutout_slug(name):
     return re.sub(r"[^A-Za-z0-9_-]", "", name.replace(" ", "_"))
 
 
-def _cutout_anchor(name, suffix, label):
-    path = os.path.join(SITE, "images", "cutouts", cutout_slug(name) + suffix + ".jpg")
-    if not os.path.exists(path):
-        return None
-    return ('<a href="images/cutouts/%s%s.jpg" target="_blank" class="u-active-none '
-            'u-border-none u-btn u-button-link u-button-style u-hover-none u-none '
-            'u-text-hover-palette-1-base u-text-white">%s</a>'
-            % (cutout_slug(name), suffix, label))
+def _cutout_view_page(name):
+    """Standalone viewer page: the wide-field cutout with the zoom-in cutout
+    offset beside it -- staggered and slightly rotated rather than grid-
+    aligned, so the pair reads as one zoom-in motion instead of two
+    unrelated thumbnails. Self-contained (no site header/footer, no shared
+    CSS) since it opens in its own tab as an image viewer, not a site page."""
+    slug = cutout_slug(name)
+    return """<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>%(name)s — RGB cutouts</title>
+<style>
+  body { background: #000; color: #fff; font-family: 'Open Sans', sans-serif;
+         margin: 0; }
+  .back { display: inline-block; padding: 20px 24px; color: #478ac9;
+          text-decoration: none; font-size: 0.9rem; }
+  .back:hover { text-decoration: underline; }
+  h1 { text-align: center; font-family: Roboto, sans-serif; font-weight: 700;
+       font-size: 1.75rem; margin: 0 0 40px; }
+  .wrap { display: flex; align-items: flex-start; justify-content: center;
+          flex-wrap: wrap; gap: 50px; padding: 0 20px 70px; }
+  figure { margin: 0; text-align: center; }
+  figure img { display: block; width: 560px; max-width: 88vw; height: auto;
+               border: 5px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+  figcaption { margin-top: 10px; font-size: 0.85rem; color: #ccc;
+               letter-spacing: 0.5px; text-transform: uppercase; }
+  .zoom-fig { margin-top: 120px; transform: rotate(2deg); }
+  .zoom-fig img { width: 400px; }
+  @media (max-width: 700px) {
+    .zoom-fig { margin-top: 0; transform: none; }
+  }
+</style>
+</head><body>
+  <a class="back" href="../../Sample.html">&larr; Back to Sample</a>
+  <h1>%(name)s</h1>
+  <div class="wrap">
+    <figure><img src="%(slug)s_wide.jpg" alt="%(name)s wide-field cutout">
+      <figcaption>wide field (1&deg;)</figcaption></figure>
+    <figure class="zoom-fig"><img src="%(slug)s_zoom.jpg" alt="%(name)s zoom-in cutout">
+      <figcaption>zoom in (0.3&deg;)</figcaption></figure>
+  </div>
+</body></html>
+""" % {"name": name, "slug": slug}
+
+
+def build_cutout_viewers(rows):
+    """Write a standalone viewer page per source that has both cutouts, so
+    the Sample table's Image column can link to one combined view instead of
+    two separate jpgs. Must run before sample_table() -- cutout_link() below
+    checks for the viewer page's existence on disk."""
+    for r in rows:
+        slug = cutout_slug(r["name"])
+        wide = os.path.join(SITE, "images", "cutouts", slug + "_wide.jpg")
+        zoom = os.path.join(SITE, "images", "cutouts", slug + "_zoom.jpg")
+        if os.path.exists(wide) and os.path.exists(zoom):
+            out = os.path.join(SITE, "images", "cutouts", slug + ".html")
+            with open(out, "w", encoding="utf-8") as fh:
+                fh.write(_cutout_view_page(r["name"]))
 
 
 def cutout_link(name):
-    """'DES(rgb)' links to the source's wide-field (1 deg) and zoom-in
-    (0.3 deg) cutouts, if fetched, else a dash. Not every source has
-    Legacy Survey coverage (a couple of fields in this sample fall outside
-    its footprint), so this is a plain existence check rather than an
-    assumption that every row has one; wide and zoom are checked (and thus
-    linked) independently."""
-    links = [a for a in (_cutout_anchor(name, "_wide", "wide"),
-                         _cutout_anchor(name, "_zoom", "zoom")) if a]
-    return " / ".join(links) if links else "–"
+    """'Image' links to a standalone viewer combining the wide-field and
+    zoom-in cutouts, if both were fetched (see build_cutout_viewers), else a
+    dash. Not every source has Legacy Survey coverage (a couple of fields in
+    this sample fall outside its footprint)."""
+    slug = cutout_slug(name)
+    page = os.path.join(SITE, "images", "cutouts", slug + ".html")
+    if not os.path.exists(page):
+        return "–"
+    return ('<a href="images/cutouts/%s.html" target="_blank" class="u-active-none '
+            'u-border-none u-btn u-button-link u-button-style u-hover-none u-none '
+            'u-text-hover-palette-1-base u-text-white">view</a>' % slug)
 
 
 def sample_table(groups):
@@ -1797,6 +1850,7 @@ def write_sample_ascii(groups, total):
 
 def build_sample(rows):
     groups = group_rows(rows)
+    build_cutout_viewers(rows)
     write_sample_ascii(groups, len(rows))
     intro = (SAMPLE_INTRO
              .replace("{N}", str(len(rows)))
