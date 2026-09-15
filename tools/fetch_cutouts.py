@@ -1,12 +1,15 @@
-"""Fetch 0.8 deg RGB cutouts from the Legacy Survey viewer for every source in
-sample_table.csv, burn in two scale bars, and drop them in
+"""Fetch two Legacy Survey RGB cutouts per source in sample_table.csv -- a
+1x1 deg wide-field view and a 0.3x0.3 deg zoom-in centred on the galaxy --
+burn vertical scale bars into each, and drop them in
 ../docs/images/cutouts/ for the Sample page's "DES(rgb)" column to link to.
 
-Every cutout carries the same pixel scale, so an angular bar (ANGULAR_BAR_
-ARCSEC) comes out the same length in every image -- a fixed yardstick to
-compare fields by. A physical bar (PHYS_BAR_KPC, using each source's
-dl_mpc) instead varies image to image, showing the true kpc scale of each
-galaxy. Both are drawn stacked in the bottom-right corner.
+Both cutouts are the same pixel size (SIZE), so within each FOV an angular
+bar comes out the same length in every image -- a fixed yardstick to
+compare fields by -- while a physical bar (using each source's dl_mpc)
+varies image to image, showing the true kpc scale of each galaxy. The
+wide field uses a 30" / 10 kpc pair; the zoom-in, being ~3x finer per
+pixel, uses a 10" / 1 kpc pair. Both bars are drawn vertically, side by
+side, in the bottom-right corner.
 
 This is a one-off asset-acquisition step, run by hand when the sample
 changes -- NOT part of build_site.py's regular build, which stays
@@ -33,8 +36,17 @@ SITE = "../docs"
 OUT_DIR = os.path.join(SITE, "images", "cutouts")
 
 LAYER = "ls-dr11"
-PIXSCALE = 3.6     # arcsec/pixel
-SIZE = 800         # pixels -> 800 * 3.6 arcsec = 2880 arcsec = 0.8 deg
+SIZE = 800   # pixels, both wide and zoom cutouts
+
+FOV_WIDE_DEG = 1.0
+FOV_ZOOM_DEG = 0.3
+PIXSCALE_WIDE = FOV_WIDE_DEG * 3600 / SIZE   # 4.5 "/px
+PIXSCALE_ZOOM = FOV_ZOOM_DEG * 3600 / SIZE   # 1.35 "/px
+
+# (angular bar arcsec, physical bar kpc) per FOV.
+BARS_WIDE = (30.0, 10.0)
+BARS_ZOOM = (10.0, 1.0)
+
 NO_COVERAGE_MAX_BYTES = 20000
 
 # Sources whose Legacy Survey RGB cutout is unusable for reasons other than
@@ -46,8 +58,6 @@ NO_COVERAGE_MAX_BYTES = 20000
 # brightness. Source a Cen A image separately rather than re-fetching here.
 KNOWN_BAD = {"Centaurus A"}
 
-ANGULAR_BAR_ARCSEC = 30.0   # fixed length in every image (same pixel scale)
-PHYS_BAR_KPC = 10.0         # varies image to image (depends on dl_mpc)
 ARCSEC_PER_KPC_AT_1MPC = 206.265   # small-angle: 1 kpc subtends this many
                                     # arcsec at 1 Mpc; scales as 1/distance.
                                     # D_A is approximated as D_L (fine at
@@ -55,8 +65,8 @@ ARCSEC_PER_KPC_AT_1MPC = 206.265   # small-angle: 1 kpc subtends this many
 
 
 def cutout_slug(name):
-    """Filename stem for a source's cutout image. Shared with build_site.py
-    so the Sample page links match what's actually on disk."""
+    """Filename stem for a source's cutout images. Shared with
+    build_site.py so the Sample page links match what's actually on disk."""
     return re.sub(r"[^A-Za-z0-9_-]", "", name.replace(" ", "_"))
 
 
@@ -72,35 +82,57 @@ def dec_to_deg(s):
     return sign * (float(d) + float(m) / 60 + float(sec) / 3600)
 
 
-def _draw_one_bar(draw, w, y, bar_px, label, font):
-    x2 = w - 24
-    x1 = x2 - bar_px
-    draw.line([(x1, y), (x2, y)], fill="white", width=3)
-    draw.line([(x1, y - 5), (x1, y + 5)], fill="white", width=3)
-    draw.line([(x2, y - 5), (x2, y + 5)], fill="white", width=3)
+BAR_MARGIN = 30      # baseline distance from the bottom edge
+BAR_COLUMN_GAP = 46  # x spacing between the two bar columns
+
+
+def _draw_one_bar(draw, baseline_y, x, length_px, label, font):
+    """One vertical bar, growing up from baseline_y at column x, with a
+    fixed-position horizontal caption centred underneath -- so the label
+    never has to share space with (or scale with) a very short bar."""
+    y2 = baseline_y
+    y1 = y2 - length_px
+
+    draw.line([(x, y1), (x, y2)], fill="white", width=3)
+    draw.line([(x - 5, y1), (x + 5, y1)], fill="white", width=3)
+    draw.line([(x - 5, y2), (x + 5, y2)], fill="white", width=3)
+
     bbox = draw.textbbox((0, 0), label, font=font)
     tw = bbox[2] - bbox[0]
-    draw.text((x2 - tw, y - 20), label, fill="white", font=font)
+    draw.text((x - tw / 2, y2 + 6), label, fill="white", font=font)
 
 
-def draw_scale_bars(path, dl_mpc):
-    """Burn two stacked scale bars into the bottom-right corner of the
-    cutout at path: a fixed angular bar (same pixel length in every image,
-    since they share a pixel scale) and a physical bar sized from the
+def draw_scale_bars(path, dl_mpc, pixscale, angular_arcsec, phys_kpc):
+    """Burn two vertical scale bars, side by side, into the bottom-right
+    corner of the cutout at path: a fixed angular bar (same pixel length
+    in every image at this pixel scale) and a physical bar sized from the
     source's luminosity distance (varies image to image)."""
     im = Image.open(path).convert("RGB")
     draw = ImageDraw.Draw(im)
-    w, h = im.size
     font = ImageFont.load_default()
+    baseline_y = im.height - BAR_MARGIN
 
     arcsec_per_kpc = ARCSEC_PER_KPC_AT_1MPC / dl_mpc
-    phys_px = max(1, round(PHYS_BAR_KPC * arcsec_per_kpc / PIXSCALE))
-    ang_px = max(1, round(ANGULAR_BAR_ARCSEC / PIXSCALE))
+    phys_px = max(1, round(phys_kpc * arcsec_per_kpc / pixscale))
+    ang_px = max(1, round(angular_arcsec / pixscale))
 
-    _draw_one_bar(draw, w, h - 24, phys_px, "%g kpc" % PHYS_BAR_KPC, font)
-    _draw_one_bar(draw, w, h - 64, ang_px, '%g"' % ANGULAR_BAR_ARCSEC, font)
+    _draw_one_bar(draw, baseline_y, im.width - 24, phys_px,
+                  "%g kpc" % phys_kpc, font)
+    _draw_one_bar(draw, baseline_y, im.width - 24 - BAR_COLUMN_GAP, ang_px,
+                  '%g"' % angular_arcsec, font)
 
     im.save(path, "JPEG", quality=90)
+
+
+def _fetch(name, ra, dec, pixscale, suffix):
+    url = ("https://www.legacysurvey.org/viewer/cutout.jpg?ra=%.6f&dec=%.6f"
+           "&layer=%s&pixscale=%s&size=%d" % (ra, dec, LAYER, pixscale, SIZE))
+    path = os.path.join(OUT_DIR, cutout_slug(name) + suffix + ".jpg")
+    urllib.request.urlretrieve(url, path)
+    if os.path.getsize(path) < NO_COVERAGE_MAX_BYTES:
+        os.remove(path)
+        return None
+    return path
 
 
 def main():
@@ -116,23 +148,26 @@ def main():
             continue
         ra = ra_to_deg(r["ra"])
         dec = dec_to_deg(r["dec"])
-        url = ("https://www.legacysurvey.org/viewer/cutout.jpg?ra=%.6f&dec=%.6f"
-               "&layer=%s&pixscale=%s&size=%d" % (ra, dec, LAYER, PIXSCALE, SIZE))
-        path = os.path.join(OUT_DIR, cutout_slug(name) + ".jpg")
-        urllib.request.urlretrieve(url, path)
-        size = os.path.getsize(path)
-        if size < NO_COVERAGE_MAX_BYTES:
-            os.remove(path)
-            skipped.append(name)
-        else:
-            draw_scale_bars(path, float(r["dl_mpc"]))
-            kept.append(name)
-        time.sleep(0.3)   # be polite to the cutout service
+        dl_mpc = float(r["dl_mpc"])
 
-    print("%d cutouts saved to %s" % (len(kept), OUT_DIR))
+        wide = _fetch(name, ra, dec, PIXSCALE_WIDE, "_wide")
+        if wide:
+            draw_scale_bars(wide, dl_mpc, PIXSCALE_WIDE, *BARS_WIDE)
+        time.sleep(0.3)
+
+        zoom = _fetch(name, ra, dec, PIXSCALE_ZOOM, "_zoom")
+        if zoom:
+            draw_scale_bars(zoom, dl_mpc, PIXSCALE_ZOOM, *BARS_ZOOM)
+        time.sleep(0.3)
+
+        if wide or zoom:
+            kept.append(name)
+        else:
+            skipped.append(name)
+
+    print("%d sources have at least one cutout saved to %s" % (len(kept), OUT_DIR))
     if skipped:
-        print("%d sources have no Legacy Survey coverage, skipped: %s"
-              % (len(skipped), ", ".join(skipped)))
+        print("%d sources skipped entirely: %s" % (len(skipped), ", ".join(skipped)))
 
 
 if __name__ == "__main__":

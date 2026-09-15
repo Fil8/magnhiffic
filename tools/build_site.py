@@ -1690,24 +1690,33 @@ def sample_legend(groups):
 
 
 def cutout_slug(name):
-    """Filename stem for a source's 0.5 deg RGB cutout. Shared (by
-    convention) with tools/fetch_cutouts.py, which is what actually
-    populates docs/images/cutouts/ -- run that script by hand after
-    editing sample_table.csv, then rebuild."""
+    """Filename stem for a source's RGB cutouts (before the _wide/_zoom
+    suffix). Shared (by convention) with tools/fetch_cutouts.py, which is
+    what actually populates docs/images/cutouts/ -- run that script by
+    hand after editing sample_table.csv, then rebuild."""
     return re.sub(r"[^A-Za-z0-9_-]", "", name.replace(" ", "_"))
 
 
-def cutout_link(name):
-    """'image' link to the source's cutout if one was fetched, else a dash.
-    Not every source has Legacy Survey coverage (a couple of fields in this
-    sample fall outside its footprint), so this is a plain existence check
-    rather than an assumption that every row has one."""
-    path = os.path.join(SITE, "images", "cutouts", cutout_slug(name) + ".jpg")
+def _cutout_anchor(name, suffix, label):
+    path = os.path.join(SITE, "images", "cutouts", cutout_slug(name) + suffix + ".jpg")
     if not os.path.exists(path):
-        return "–"
-    return ('<a href="images/cutouts/%s.jpg" target="_blank" class="u-active-none '
+        return None
+    return ('<a href="images/cutouts/%s%s.jpg" target="_blank" class="u-active-none '
             'u-border-none u-btn u-button-link u-button-style u-hover-none u-none '
-            'u-text-hover-palette-1-base u-text-white">DES(rgb)</a>' % cutout_slug(name))
+            'u-text-hover-palette-1-base u-text-white">%s</a>'
+            % (cutout_slug(name), suffix, label))
+
+
+def cutout_link(name):
+    """'DES(rgb)' links to the source's wide-field (1 deg) and zoom-in
+    (0.3 deg) cutouts, if fetched, else a dash. Not every source has
+    Legacy Survey coverage (a couple of fields in this sample fall outside
+    its footprint), so this is a plain existence check rather than an
+    assumption that every row has one; wide and zoom are checked (and thus
+    linked) independently."""
+    links = [a for a in (_cutout_anchor(name, "_wide", "wide"),
+                         _cutout_anchor(name, "_zoom", "zoom")) if a]
+    return " / ".join(links) if links else "–"
 
 
 def sample_table(groups):
