@@ -1597,15 +1597,14 @@ def build_survey():
 # -------------------------------------------------------------------- Sample
 
 SAMPLE_INTRO = (
-    'The table below lists the {N} active galaxies observed by MAGNHIFFIC. An '
+    'The table below lists the {N} active galaxies in the MAGNHIFFIC sample and '
+    'its reference subsamples. An '
     '{ASCII} of this table is also available. Each object name links to its entry '
     'in the {NED}.&nbsp;<br>'
     '<br>Column densities and distances assume H'
     '<span style="font-size: 0.75rem;">0</span>&nbsp;=&nbsp;67.8 km s'
     '<span style="font-size: 0.75rem;">\u22121</span> Mpc'
-    '<span style="font-size: 0.75rem;">\u22121</span>. AGN types distinguish '
-    'radiative-mode (Seyfert) sources from radio-jetted (RL) sources; the '
-    'environment column gives the group or cluster membership of the host.&nbsp;'
+    '<span style="font-size: 0.75rem;">\u22121</span>.&nbsp;'
     '<br><br>{GROUPS} Rows are grouped by subsample and, within each group, '
     'sorted by increasing luminosity distance. {LEGEND}')
 
@@ -1777,10 +1776,14 @@ def sample_table(groups):
     Each row is a dict with name/ra/dec/dl_mpc/gal_type/agn_type/environment/
     ned_url/subsample.  Every group gets a coloured label row. Data rows
     carry the group's class so theme.css can tint them, except Additional
-    sources rows, which carry an AGN-type class instead (see agn_class)."""
+    sources rows, which carry an AGN-type class instead (see agn_class).
+    agn_type and environment are read but not displayed -- the former still
+    drives agn_class() below; the latter is kept in the CSV for provenance
+    only. MeerKAT observation status lives in its own table on another page,
+    not here."""
     head_cells = ["Name", "RA [J2000]", "Dec [J2000]",
                   "D<span style=\"font-size: 0.75rem;\">L</span> [Mpc]",
-                  "Galaxy type", "AGN type", "Environment", "Image"]
+                  "Galaxy type", "Image"]
     ths = "".join('\n                <th class="u-border-1 u-border-grey-30 '
                   'u-table-cell">%s</th>' % c for c in head_cells)
     trs = ""
@@ -1802,8 +1805,7 @@ def sample_table(groups):
                       'u-hover-none u-none u-text-hover-palette-1-base '
                       'u-text-white">%s</a>' % (r["ned_url"], r["name"]))
             cells = [nm, r["ra"], r["dec"], r["dl_mpc"] or "\u2013",
-                     r["gal_type"], r["agn_type"], r["environment"],
-                     cutout_link(r["name"])]
+                     r["gal_type"], cutout_link(r["name"])]
             tds = "".join('\n                <td class="u-border-1 '
                           'u-border-grey-30 u-table-cell">%s</td>' % c
                           for c in cells)
@@ -1812,7 +1814,7 @@ def sample_table(groups):
                     'style="height: 40px;">%s\n              </tr>' % (row_cls, tds))
     return """<table class="u-table-entity u-table-entity-1">
             <colgroup>
-              <col width="14%%"><col width="11%%"><col width="11%%"><col width="7%%"><col width="8%%"><col width="20%%"><col width="17%%"><col width="12%%">
+              <col width="20%%"><col width="16%%"><col width="16%%"><col width="10%%"><col width="18%%"><col width="20%%">
             </colgroup>
             <thead class="u-black u-table-header u-table-header-1">
               <tr style="height: 46px;">%s
@@ -1824,22 +1826,21 @@ def sample_table(groups):
 
 
 def write_sample_ascii(groups, total):
-    """Plain-text export, same grouping and ordering as the table."""
-    w = (18, 12, 13, 6, 6, 34)
+    """Plain-text export, same grouping, ordering and columns as the table."""
+    w = (18, 12, 13, 6, 6)
     out = ["# MAGNHIFFIC sample (%d objects).  H0 = 67.8 km/s/Mpc" % total,
            "# grouped by subsample, then sorted by ascending distance",
-           "# %-*s%-*s%-*s%*s %-*s %-*s%s"
+           "# %-*s%-*s%-*s%*s %s"
            % (w[0] - 2, "name", w[1], "ra_j2000", w[2], "dec_j2000",
-              w[3], "dl_mpc", w[4], "gtype", w[5], "agn_type", "environment")]
+              w[3], "dl_mpc", "gtype")]
     for _k, label, ref, _u, grp in groups:
         out.append("#")
         out.append("# %s%s (%d objects)"
                    % (label, " -- " + ref if ref else "", len(grp)))
         for r in grp:
-            out.append("  %-*s%-*s%-*s%*s %-*s %-*s%s"
+            out.append("  %-*s%-*s%-*s%*s %s"
                        % (w[0], r["name"], w[1], r["ra"], w[2], r["dec"],
-                          w[3], r["dl_mpc"] or "-", w[4], r["gal_type"],
-                          w[5], r["agn_type"], r["environment"]))
+                          w[3], r["dl_mpc"] or "-", r["gal_type"]))
     d = os.path.join(SITE, "files")
     if not os.path.isdir(d):
         os.makedirs(d)

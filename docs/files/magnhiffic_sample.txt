@@ -1,42 +1,47 @@
-# MAGNHIFFIC sample (33 objects).  H0 = 67.8 km/s/Mpc
+# MAGNHIFFIC sample (38 objects).  H0 = 67.8 km/s/Mpc
 # grouped by subsample, then sorted by ascending distance
-# name            ra_j2000    dec_j2000    dl_mpc gtype  agn_type                          environment
+# name            ra_j2000    dec_j2000    dl_mpc gtype
 #
 # MAGNUM subsample -- Venturi et al. (2017) (7 objects)
-  Centaurus A       13:25:27.62 -43:01:08.81    3.4 S0     Seyfert 2 / RL restarted          BGG of group
-  NGC 1068          02:42:41    -00:00:48      15.5 Sb     Seyfert & kpc-scale radio jet     Poor group (2 mem)
-  NGC 1386          03:36:46.18 -35:59:57.87   15.6 Sb     Seyfert 2                         A few smaller satellites
-  NGC 1365          03:33:36.37 -36:08:25.45   19.6 Sc     Seyfert 1.8                       Numerous group of satellites
-  NGC 5643          14:32:40.74 -44:10:27.86   20.6 Sc     Seyfert 2                         Isolated (1 companion)
-  NGC 2992          09:45:42    -14:19:35      34.8 Sa     Seyfert & kpc jet                 Isolated (1 comp)
-  IC 5063           20:52:02    -57:04:08      47.9 S0a    Seyfert & kpc-scale radio jet     Isolated 1 comp?
+  Centaurus A       13:25:27.62 -43:01:08.81    3.4 S0
+  NGC 1068          02:42:41    -00:00:48      15.5 Sb
+  NGC 1386          03:36:46.18 -35:59:57.87   15.6 Sb
+  NGC 1365          03:33:36.37 -36:08:25.45   19.6 Sc
+  NGC 5643          14:32:40.74 -44:10:27.86   20.6 Sc
+  NGC 2992          09:45:42    -14:19:35      34.8 Sa
+  IC 5063           20:52:02    -57:04:08      47.9 S0a
 #
-# Radio-loud subsample -- Ruffa et al. (2019) (6 objects)
-  NGC 1399          03:38:29.03 -35:27:02.36   19.4 E      RL kpc jets                       BCG of Fornax cluster
-  Fornax A          03:22:41.72 -37:12:29.62   20.8 S0     RL restarted                      BGG of Fornax group
-  IC 1459           22:57:10.61 -36:27:44.0    24.2 E      RL kpc-scale radio jets           BGG (16 mem)
-  NGC 3100          10:00:40.83 -31:39:52.35   38.5 S0     RL kpc jets / FRI                 BGG of group
-  NGC 3557          11:09:57.64 -37:32:20.96     44 E      RL 10 kpc jets / FRI              Poor group
-  IC 4296           13:36:39    -33:57:57      51.2 E      RL 100 kpc radio jets             BCG of A3537
+# Radio-loud subsample -- Ruffa et al. (2019) (11 objects)
+  NGC 1399          03:38:29.03 -35:27:02.36   19.4 E
+  Fornax A          03:22:41.72 -37:12:29.62   20.8 S0
+  IC 1459           22:57:10.61 -36:27:44.0    24.2 E
+  NGC 3100          10:00:40.83 -31:39:52.35   38.5 S0
+  NGC 3557          11:09:57.64 -37:32:20.96     44 E
+  IC 4296           13:36:39    -33:57:57      51.2 E
+  NGC 7075          21:31:32.96 -38:37:04.25  78.28 E
+  ESO 443-G 024     13:01:00.81 -32:26:28.59  79.79 S0
+  IC 1531           00:09:35.58 -32:16:36.93 109.28 S0
+  PKS 0718-34       07:20:47.59 -34:07:06.11 128.14 S0
+  NGC 612           01:33:57.68 -36:29:35.59 131.60 S0
 #
 # Additional sources (20 objects)
-  NGC 660           01:43:02    13:38:44       12.4 Sb     GPS / restarted?                  Poor group (3 mem)
-  NGC 1433          03:42:01.55 -47:13:19.5    14.9 SBb    Seyfert 2                         NGC 1434 group
-  NGC 1808          05:07:42    -37:30:47      15.6 Sab    Seyfert                           Group (4 mem)
-  NGC 1566          04:20:00.42 -54:56:16.1    17.6 Sc     Seyfert 1.5                       Dorado group
-  NGC 1097          02:46:19    -30:16:30      18.6 Sb     Seyfert + kpc-scale jets          Poor Group (2 mem)
-  NGC 1371          03:35:01.34 -24:55:59.64   20.4 Sa     Seyfert                           Eridanus Group member
-  NGC 1052          02:41:05    -08:15:21      20.5 E      RL + kpc-scale jets               Group (4 mem)
-  NGC 1672          04:45:42.50 -59:14:49.85   20.5 SBc    Seyfert 2                         Dorado group (loose)
-  NGC 0289          00:52:42.37 -31:12:21.0    22.9 Sb     Seyfert                           NGC0134 group (loose)
-  ESO 428-G14       07:16:31.21 -29:19:28.9    25.0 Sa     Seyfert 2                         BGG of group
-  NGC 5506          14:13:15    -03:12:27      26.9 Sa     Seyfert                           Poor group
-  ESO 358- G 063    03:46:19.01 -34:56:36.8    27.8 Sd     Seyfert                           Edge of Fornax cluster
-  NGC 2663          08:45:08    -33:47:41      29.9 E      RL + 355 kpc jets                 Isolated
-  NGC 4261          12:19:23    05:49:29       32.1 E      RL 80 kpc jet & lobe 75 Myr FRI   Group (18 mem)
-  NGC 5903          15:18:37    -24:04:07      33.9 E      RL last activity: 360 Myr         Group (30 mem)
-  NGC 4696          12:48:49    -41:18:40      41.7 S0     RL + 10 kpc jets                  BCG (Centaurus cluster?)
-  NGC 5793          14:59:25    -16:41:36      46.2 E      Compact RS                        Isolated
-  NGC 5090          13:21:13    -43:42:17      46.8 E      >10 kpc jets                      Group (5 mem)
-  NGC 3801          11:40:16.94 17:43:40.98    52.1 S0     FRI - 11 kpc jets                 Pour group + past merger
-  PKS 1718-649      17:23:41.03 -65:00:36.62     59 S0     RL pc jets / young source         Isolated (max 1 comp >250 kpc)
+  NGC 660           01:43:02    13:38:44       12.4 Sb
+  NGC 1433          03:42:01.55 -47:13:19.5    14.9 SBb
+  NGC 1808          05:07:42    -37:30:47      15.6 Sab
+  NGC 1566          04:20:00.42 -54:56:16.1    17.6 Sc
+  NGC 1097          02:46:19    -30:16:30      18.6 Sb
+  NGC 1371          03:35:01.34 -24:55:59.64   20.4 Sa
+  NGC 1052          02:41:05    -08:15:21      20.5 E
+  NGC 1672          04:45:42.50 -59:14:49.85   20.5 SBc
+  NGC 0289          00:52:42.37 -31:12:21.0    22.9 Sb
+  ESO 428-G14       07:16:31.21 -29:19:28.9    25.0 Sa
+  NGC 5506          14:13:15    -03:12:27      26.9 Sa
+  ESO 358- G 063    03:46:19.01 -34:56:36.8    27.8 Sd
+  NGC 2663          08:45:08    -33:47:41      29.9 E
+  NGC 4261          12:19:23    05:49:29       32.1 E
+  NGC 5903          15:18:37    -24:04:07      33.9 E
+  NGC 4696          12:48:49    -41:18:40      41.7 S0
+  NGC 5793          14:59:25    -16:41:36      46.2 E
+  NGC 5090          13:21:13    -43:42:17      46.8 E
+  NGC 3801          11:40:16.94 17:43:40.98    52.1 S0
+  PKS 1718-649      17:23:41.03 -65:00:36.62     59 S0
