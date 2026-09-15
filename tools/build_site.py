@@ -1707,7 +1707,7 @@ def cutout_link(name):
         return "–"
     return ('<a href="images/cutouts/%s.jpg" target="_blank" class="u-active-none '
             'u-border-none u-btn u-button-link u-button-style u-hover-none u-none '
-            'u-text-hover-palette-1-base u-text-white">image</a>' % cutout_slug(name))
+            'u-text-hover-palette-1-base u-text-white">DES(rgb)</a>' % cutout_slug(name))
 
 
 def sample_table(groups):
