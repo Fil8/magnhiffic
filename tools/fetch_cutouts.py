@@ -7,9 +7,10 @@ Both cutouts are the same pixel size (SIZE), so within each FOV an angular
 bar comes out the same length in every image -- a fixed yardstick to
 compare fields by -- while a physical bar (using each source's dl_mpc)
 varies image to image, showing the true kpc scale of each galaxy. The
-wide field uses a 30" / 10 kpc pair; the zoom-in, being ~3x finer per
-pixel, uses a 10" / 1 kpc pair. Both bars are drawn vertically, side by
-side, in the bottom-right corner.
+wide field uses a 2' / 30 kpc pair; the zoom-in, being ~3x finer per
+pixel, uses a 30" / 10 kpc pair. Both bars are drawn vertically: the
+angular bar in the bottom-left corner, the physical bar in the
+bottom-right.
 
 This is a one-off asset-acquisition step, run by hand when the sample
 changes -- NOT part of build_site.py's regular build, which stays
@@ -44,8 +45,8 @@ PIXSCALE_WIDE = FOV_WIDE_DEG * 3600 / SIZE   # 4.5 "/px
 PIXSCALE_ZOOM = FOV_ZOOM_DEG * 3600 / SIZE   # 1.35 "/px
 
 # (angular bar arcsec, physical bar kpc) per FOV.
-BARS_WIDE = (30.0, 10.0)
-BARS_ZOOM = (10.0, 1.0)
+BARS_WIDE = (120.0, 30.0)
+BARS_ZOOM = (30.0, 10.0)
 
 NO_COVERAGE_MAX_BYTES = 20000
 
@@ -82,8 +83,15 @@ def dec_to_deg(s):
     return sign * (float(d) + float(m) / 60 + float(sec) / 3600)
 
 
-BAR_MARGIN = 30      # baseline distance from the bottom edge
-BAR_COLUMN_GAP = 46  # x spacing between the two bar columns
+BAR_MARGIN = 30   # baseline distance from the bottom edge
+BAR_INSET = 24    # bar column distance from the left/right edge
+
+
+def _angular_label(angular_arcsec):
+    """Arcsec as a compact label, switching to arcmin at/above 60"."""
+    if angular_arcsec >= 60:
+        return "%g'" % (angular_arcsec / 60)
+    return '%g"' % angular_arcsec
 
 
 def _draw_one_bar(draw, baseline_y, x, length_px, label, font):
@@ -103,10 +111,10 @@ def _draw_one_bar(draw, baseline_y, x, length_px, label, font):
 
 
 def draw_scale_bars(path, dl_mpc, pixscale, angular_arcsec, phys_kpc):
-    """Burn two vertical scale bars, side by side, into the bottom-right
-    corner of the cutout at path: a fixed angular bar (same pixel length
-    in every image at this pixel scale) and a physical bar sized from the
-    source's luminosity distance (varies image to image)."""
+    """Burn two vertical scale bars into the cutout at path: a fixed
+    angular bar (same pixel length in every image at this pixel scale) in
+    the bottom-left corner, and a physical bar sized from the source's
+    luminosity distance (varies image to image) in the bottom-right."""
     im = Image.open(path).convert("RGB")
     draw = ImageDraw.Draw(im)
     font = ImageFont.load_default()
@@ -116,10 +124,10 @@ def draw_scale_bars(path, dl_mpc, pixscale, angular_arcsec, phys_kpc):
     phys_px = max(1, round(phys_kpc * arcsec_per_kpc / pixscale))
     ang_px = max(1, round(angular_arcsec / pixscale))
 
-    _draw_one_bar(draw, baseline_y, im.width - 24, phys_px,
+    _draw_one_bar(draw, baseline_y, BAR_INSET, ang_px,
+                  _angular_label(angular_arcsec), font)
+    _draw_one_bar(draw, baseline_y, im.width - BAR_INSET, phys_px,
                   "%g kpc" % phys_kpc, font)
-    _draw_one_bar(draw, baseline_y, im.width - 24 - BAR_COLUMN_GAP, ang_px,
-                  '%g"' % angular_arcsec, font)
 
     im.save(path, "JPEG", quality=90)
 
