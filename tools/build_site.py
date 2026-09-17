@@ -78,16 +78,20 @@ STAR_NODE = 116      # diameter of each round button, px
 
 NAV = [
     ("Home.html",                "Home",        []),
-    ("Publications.html",        "Publications",[]),
     ("Survey.html",              "Project",     [("Science.html", "Science"),
-                                                 ("Sample.html",  "Sample")]),
-    ("Public-Data-Release.html", "Public Data", []),
+                                                 ("Sample.html",  "Sample"),
+                                                 ("Observations.html", "Observations"),
+                                                 ("Public-Data-Release.html", "Data")]),
+    ("Publications.html",        "Publications",[]),
     ("Team.html",                "Team",        [("Data.html",     "Team Data"),
                                                  ("Gallery.html",  "Gallery"),
                                                  ("Releases.html", "Releases"),
                                                  ("Projects.html", "Projects")]),
-    ("Contact.html",             "Contact",     []),
 ]
+# Contact.html and Public-Data-Release.html are still built (build_contact,
+# build_public_data) but no longer linked from the nav -- Contact isn't
+# linked from anywhere else either (reachable only by direct URL); Public
+# Data is reachable via the "Data" dropdown item above, which points at it.
 
 WORDMARK_FULL = "MeerKAT AGN HI Feeding &amp; Feedback Investigation Close-by"
 
@@ -2288,6 +2292,19 @@ def build_contact():
 }""")
 
 
+def build_observations():
+    """Placeholder page for the Project dropdown's "Observations" item --
+    no content yet; fill in observing status/plans and expand as needed."""
+    s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="sec-obs1">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <p class="u-text u-text-default u-text-1">Observations content coming soon.</p>
+      </div>
+    </section>"""
+    desc = "MAGNHIFFIC observing status and plans."
+    write("Observations.html", page("Observations", "Observations.css", [s1], desc))
+    write_css("Observations.css", tpl_css("_observations_sec1.css"))
+
+
 # ------------------------------------------------------- password-gated pages
 #
 # The gate is client-side (Nicepage's scheme, unchanged from the template):
@@ -2644,6 +2661,7 @@ def build_all():
     build_team()
     build_public_data()
     build_contact()
+    build_observations()
     build_data()
     build_gallery()
     build_releases()
