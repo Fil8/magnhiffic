@@ -12,3 +12,6 @@ Thumbs.db
 # python
 __pycache__/
 *.pyc
+
+# Claude Code session handover notes (local only)
+.claude/HANDOVER.md
