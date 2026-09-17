@@ -2326,9 +2326,9 @@ MEERKAT_PROGRAMME = {}
 for _prog, _names in [
     ("MFS", ["NGC 1386", "NGC 1365", "NGC 1399", "Fornax A"]),
     ("MHONGOOSE", ["NGC 1566"]),
-    ("OT3 107NE", ["NGC 3100", "NGC 3557", "PKS 1718-649"]),
-    ("MAG-OT2 32k hrs", ["NGC 5643", "NGC 1433", "ESO 428-G14", "Centaurus A"]),
-    ("MAG-OT6 107NE 25hrs", ["NGC 2992", "NGC 1052", "NGC 660", "NGC 1068"]),
+    ("107NE 25hrs (OT3)", ["NGC 3100", "NGC 3557", "PKS 1718-649"]),
+    ("32k-5hrs (OT2)", ["NGC 5643", "NGC 1433", "ESO 428-G14", "Centaurus A"]),
+    ("107NE 25hrs (OT6)", ["NGC 2992", "NGC 1052", "NGC 660", "NGC 1068"]),
 ]:
     for _n in _names:
         MEERKAT_PROGRAMME[_n] = _prog
