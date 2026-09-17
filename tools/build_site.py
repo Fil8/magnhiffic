@@ -2309,7 +2309,58 @@ VST_NO_OBS = {
 }
 
 
+# Per-filter VST completion (done, required) for the sources with tracked
+# progress, from the user's own completion table (2026-09-17). A few source
+# rows in that table had a second, RA/Dec-less continuation line -- extra
+# g/r-band pointings, inferred because every such stray value's denominator
+# is 6, a total that (in this data) only ever belongs to g or r -- i and
+# Halpha always total 4 and 15 (24 for PKS 1718-649). Those are folded into
+# the g/r totals below. NGC 1052's single stray value isn't attributable to
+# one filter, but its whole row is already 100% either way, so it doesn't
+# change the result. "(VM)" annotations in the source table don't affect
+# completion and are dropped.
+VST_COMPLETION = {
+    "IC 1531":      {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
+    "NGC 660":      {"g": (0, 6),   "r": (6, 6),   "i": (0, 4), "halpha": (1, 15)},
+    "NGC 1052":     {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
+    "NGC 1068":     {"g": (6, 6),   "r": (6, 6),   "i": (2, 4), "halpha": (1, 15)},
+    "NGC 1097":     {"g": (6, 8),   "r": (6, 8),   "i": (4, 4), "halpha": (15, 15)},
+    "NGC 1433":     {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
+    "PKS 0718-34":  {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
+    "ESO 428-G14":  {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (8, 15)},
+    "NGC 2992":     {"g": (12, 12), "r": (11, 12), "i": (4, 4), "halpha": (14, 15)},
+    "NGC 3557":     {"g": (12, 12), "r": (12, 12), "i": (4, 4), "halpha": (15, 15)},
+    "NGC 5643":     {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
+    "IC 5063":      {"g": (12, 12), "r": (12, 12), "i": (4, 4), "halpha": (15, 15)},
+    "NGC 7075":     {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
+    "PKS 1718-649": {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (24, 24)},
+    "NGC 3100":     {"g": (12, 12), "r": (12, 12), "i": (4, 4), "halpha": (15, 15)},
+    "IC 4296":      {"g": (0, 6),   "r": (0, 6),   "i": (0, 4), "halpha": (0, 15)},
+}
+
+FILTERS = [("g", "g"), ("r", "r"), ("i", "i"), ("halpha", "H&alpha;")]
+
+
+def vst_breakdown(name):
+    """Per-filter completion for a tracked source: each filter bolded if
+    100% complete, else the filter followed by its percentage. Returns the
+    four formatted pieces in g, r, i, Halpha order."""
+    data = VST_COMPLETION[name]
+    pieces = []
+    for key, label in FILTERS:
+        done, total = data[key]
+        pct = round(100 * done / total) if total else 0
+        pieces.append("<b>%s</b>" % label if pct == 100
+                       else "%s (%d%%)" % (label, pct))
+    return pieces
+
+
 def vst_status(name):
+    if name in VST_COMPLETION:
+        g, r, i, ha = vst_breakdown(name)
+        if name in VST_VEGAS:
+            return "VEGAS (%s,%s), %s, %s" % (g, r, i, ha)
+        return "%s, %s, %s, %s" % (g, r, i, ha)
     if name in FORNAX_CLUSTER:
         return "FDS (g,r,i,H&alpha;)"
     if name in VST_VEGAS:
