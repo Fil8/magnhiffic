@@ -2305,7 +2305,7 @@ VST_VEGAS = {"NGC 1566", "NGC 3100"}
 VST_NO_OBS = {
     "Centaurus A", "IC 1459", "NGC 0289", "NGC 1371", "NGC 1672",
     "NGC 1808", "NGC 2663", "NGC 3801", "NGC 4261", "NGC 4696",
-    "NGC 5090", "NGC 5506", "NGC 5793", "NGC 5903",
+    "NGC 5090", "NGC 5506", "NGC 5793", "NGC 5903", "IC 4296",
 }
 
 
@@ -2335,8 +2335,10 @@ VST_COMPLETION = {
     "NGC 7075":     {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (15, 15)},
     "PKS 1718-649": {"g": (6, 6),   "r": (6, 6),   "i": (4, 4), "halpha": (24, 24)},
     "NGC 3100":     {"g": (12, 12), "r": (12, 12), "i": (4, 4), "halpha": (15, 15)},
-    "IC 4296":      {"g": (0, 6),   "r": (0, 6),   "i": (0, 4), "halpha": (0, 15)},
 }
+# IC 4296's tracked progress was 0/6, 0/6, 0/4, 0/15 across the board --
+# per the user, that's shown as a plain no-observation dash (VST_NO_OBS)
+# rather than a 0% breakdown.
 
 FILTERS = [("g", "g"), ("r", "r"), ("i", "i"), ("halpha", "H&alpha;")]
 
@@ -2359,12 +2361,12 @@ def vst_status(name):
     if name in VST_COMPLETION:
         g, r, i, ha = vst_breakdown(name)
         if name in VST_VEGAS:
-            return "VEGAS (%s,%s), %s, %s" % (g, r, i, ha)
+            return "<b>VEGAS (%s,%s), %s, %s</b>" % (g, r, i, ha)
         return "%s, %s, %s, %s" % (g, r, i, ha)
     if name in FORNAX_CLUSTER:
-        return "FDS (g,r,i,H&alpha;)"
+        return "<b>FDS (g,r,i,H&alpha;)</b>"
     if name in VST_VEGAS:
-        return "VEGAS"
+        return "<b>VEGAS</b>"
     if name in VST_NO_OBS:
         return "–"
     return "g,r,i,H&alpha;"
@@ -2386,7 +2388,12 @@ for _prog, _names in [
 
 
 def meerkat_status(name):
-    return MEERKAT_PROGRAMME.get(name, "")
+    """Bold every assigned programme except OT6 -- those observations are
+    already acquired; OT6's aren't yet, per the user (2026-09-17)."""
+    prog = MEERKAT_PROGRAMME.get(name, "")
+    if prog and "OT6" not in prog:
+        return "<b>%s</b>" % prog
+    return prog
 
 
 def observations_table(groups):
