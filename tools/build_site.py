@@ -2384,6 +2384,7 @@ for _prog, _names in [
     ("107NE 25hrs (OT6)", ["NGC 2992", "NGC 1052", "NGC 660", "NGC 1068"]),
     ("4k 15hrs (OT1)", ["IC 4296"]),
     ("4k 12hrs (Comm)", ["IC 5063"]),
+    ("32k-5hrs (OT5)", ["NGC 1097"]),
 ]:
     for _n in _names:
         MEERKAT_PROGRAMME[_n] = _prog
