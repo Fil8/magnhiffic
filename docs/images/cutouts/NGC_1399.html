@@ -23,9 +23,24 @@
   @media (max-width: 700px) {
     .zoom-fig { margin-top: 0; transform: none; }
   }
+  .nav-arrow { position: fixed; top: 50%; transform: translateY(-50%);
+               display: flex; align-items: center; height: 90px;
+               font-size: 2.5rem; line-height: 1; color: #fff;
+               text-decoration: none; padding: 0 20px; opacity: 0.45;
+               transition: opacity .15s, background .15s; z-index: 10; }
+  .nav-arrow:hover { opacity: 1; background: rgba(255,255,255,.08); }
+  .nav-prev { left: 0; }
+  .nav-next { right: 0; }
+  @media (max-width: 700px) {
+    .nav-arrow { font-size: 1.8rem; height: 60px; padding: 0 12px; }
+  }
 </style>
 </head><body>
   <a class="back" href="../../Sample.html">&larr; Back to Sample</a>
+  <a class="nav-arrow nav-prev" href="IC_5063.html"
+     title="Previous: IC 5063" aria-label="Previous source">&#8249;</a>
+  <a class="nav-arrow nav-next" href="Fornax_A.html"
+     title="Next: Fornax A" aria-label="Next source">&#8250;</a>
   <h1>NGC 1399</h1>
   <div class="wrap">
     <figure><img src="NGC_1399_wide.jpg" alt="NGC 1399 wide-field cutout">

@@ -79,8 +79,8 @@ STAR_NODE = 116      # diameter of each round button, px
 NAV = [
     ("Home.html",                "Home",        []),
     ("Publications.html",        "Publications",[]),
-    ("Survey.html",              "Survey",      [("Science.html", "Science")]),
-    ("Sample.html",              "Sample",      []),
+    ("Survey.html",              "Project",     [("Science.html", "Science"),
+                                                 ("Sample.html",  "Sample")]),
     ("Public-Data-Release.html", "Public Data", []),
     ("Team.html",                "Team",        [("Data.html",     "Team Data"),
                                                  ("Gallery.html",  "Gallery"),
@@ -1696,13 +1696,18 @@ def cutout_slug(name):
     return re.sub(r"[^A-Za-z0-9_-]", "", name.replace(" ", "_"))
 
 
-def _cutout_view_page(name):
+def _cutout_view_page(name, prev_name, next_name):
     """Standalone viewer page: the wide-field cutout with the zoom-in cutout
     offset beside it -- staggered and slightly rotated rather than grid-
     aligned, so the pair reads as one zoom-in motion instead of two
     unrelated thumbnails. Self-contained (no site header/footer, no shared
-    CSS) since it opens in its own tab as an image viewer, not a site page."""
+    CSS) since it opens in its own tab as an image viewer, not a site page.
+    prev_name/next_name (always set -- the chain wraps around) drive a pair
+    of fixed left/right arrow buttons so a viewer can page through every
+    source's cutouts without going back to the Sample table each time."""
     slug = cutout_slug(name)
+    prev_slug = cutout_slug(prev_name)
+    next_slug = cutout_slug(next_name)
     return """<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
@@ -1728,9 +1733,24 @@ def _cutout_view_page(name):
   @media (max-width: 700px) {
     .zoom-fig { margin-top: 0; transform: none; }
   }
+  .nav-arrow { position: fixed; top: 50%%; transform: translateY(-50%%);
+               display: flex; align-items: center; height: 90px;
+               font-size: 2.5rem; line-height: 1; color: #fff;
+               text-decoration: none; padding: 0 20px; opacity: 0.45;
+               transition: opacity .15s, background .15s; z-index: 10; }
+  .nav-arrow:hover { opacity: 1; background: rgba(255,255,255,.08); }
+  .nav-prev { left: 0; }
+  .nav-next { right: 0; }
+  @media (max-width: 700px) {
+    .nav-arrow { font-size: 1.8rem; height: 60px; padding: 0 12px; }
+  }
 </style>
 </head><body>
   <a class="back" href="../../Sample.html">&larr; Back to Sample</a>
+  <a class="nav-arrow nav-prev" href="%(prev_slug)s.html"
+     title="Previous: %(prev_name)s" aria-label="Previous source">&#8249;</a>
+  <a class="nav-arrow nav-next" href="%(next_slug)s.html"
+     title="Next: %(next_name)s" aria-label="Next source">&#8250;</a>
   <h1>%(name)s</h1>
   <div class="wrap">
     <figure><img src="%(slug)s_wide.jpg" alt="%(name)s wide-field cutout">
@@ -1739,22 +1759,29 @@ def _cutout_view_page(name):
       <figcaption>zoom in (0.3&deg;)</figcaption></figure>
   </div>
 </body></html>
-""" % {"name": name, "slug": slug}
+""" % {"name": name, "slug": slug, "prev_slug": prev_slug, "next_slug": next_slug,
+       "prev_name": prev_name, "next_name": next_name}
 
 
 def build_cutout_viewers(rows):
     """Write a standalone viewer page per source that has both cutouts, so
     the Sample table's Image column can link to one combined view instead of
     two separate jpgs. Must run before sample_table() -- cutout_link() below
-    checks for the viewer page's existence on disk."""
-    for r in rows:
-        slug = cutout_slug(r["name"])
-        wide = os.path.join(SITE, "images", "cutouts", slug + "_wide.jpg")
-        zoom = os.path.join(SITE, "images", "cutouts", slug + "_zoom.jpg")
-        if os.path.exists(wide) and os.path.exists(zoom):
-            out = os.path.join(SITE, "images", "cutouts", slug + ".html")
-            with open(out, "w", encoding="utf-8") as fh:
-                fh.write(_cutout_view_page(r["name"]))
+    checks for the viewer page's existence on disk. Pages are chained in
+    `rows` order (the Sample table's own display order) with wraparound, so
+    the prev/next buttons on each page form one continuous loop through
+    every source that has cutouts."""
+    available = [r["name"] for r in rows
+                 if os.path.exists(os.path.join(SITE, "images", "cutouts",
+                                                 cutout_slug(r["name"]) + "_wide.jpg"))
+                 and os.path.exists(os.path.join(SITE, "images", "cutouts",
+                                                  cutout_slug(r["name"]) + "_zoom.jpg"))]
+    for i, name in enumerate(available):
+        prev_name = available[i - 1]
+        next_name = available[(i + 1) % len(available)]
+        out = os.path.join(SITE, "images", "cutouts", cutout_slug(name) + ".html")
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(_cutout_view_page(name, prev_name, next_name))
 
 
 def cutout_link(name):
@@ -1851,7 +1878,7 @@ def write_sample_ascii(groups, total):
 
 def build_sample(rows):
     groups = group_rows(rows)
-    build_cutout_viewers(rows)
+    build_cutout_viewers([r for _k, _l, _r, _u, g in groups for r in g])
     write_sample_ascii(groups, len(rows))
     intro = (SAMPLE_INTRO
              .replace("{N}", str(len(rows)))
