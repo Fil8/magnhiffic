@@ -2292,17 +2292,190 @@ def build_contact():
 }""")
 
 
-def build_observations():
-    """Placeholder page for the Project dropdown's "Observations" item --
-    no content yet; fill in observing status/plans and expand as needed."""
+# Fornax-cluster members get VST Fornax Deep Survey imaging rather than the
+# generic g,r,i,Halpha every other observed source has -- membership per the
+# user (2026-09-17), not the CSV's own `environment` field, which is stale.
+FORNAX_CLUSTER = {"NGC 1386", "NGC 1365", "NGC 1399", "Fornax A"}
+
+# The two galaxies with dedicated VST large-programme (VEGAS) imaging.
+VST_VEGAS = {"NGC 1566", "NGC 3100"}
+
+# Sources with no VST observation at all (blank VST cell would be
+# ambiguous with "not yet assigned", so these get an explicit dash).
+VST_NO_OBS = {
+    "Centaurus A", "IC 1459", "NGC 0289", "NGC 1371", "NGC 1672",
+    "NGC 1808", "NGC 2663", "NGC 3801", "NGC 4261", "NGC 4696",
+    "NGC 5090", "NGC 5506", "NGC 5793", "NGC 5903",
+}
+
+
+def vst_status(name):
+    if name in FORNAX_CLUSTER:
+        return "FDS (g,r,i,H&alpha;)"
+    if name in VST_VEGAS:
+        return "VEGAS"
+    if name in VST_NO_OBS:
+        return "–"
+    return "g,r,i,H&alpha;"
+
+
+# MeerKAT programme per source, as given by the user (2026-09-17). Sources
+# not listed here have no programme assigned yet -- blank cell, not a dash,
+# since that's still pending rather than a confirmed "none".
+MEERKAT_PROGRAMME = {}
+for _prog, _names in [
+    ("MFS", ["NGC 1386", "NGC 1365", "NGC 1399", "Fornax A"]),
+    ("MHONGOOSE", ["NGC 1566"]),
+    ("OT3 107NE", ["NGC 3100", "NGC 3557", "PKS 1718-649"]),
+    ("MAG-OT2 32k hrs", ["NGC 5643", "NGC 1433", "ESO 428-G14", "Centaurus A"]),
+    ("MAG-OT6 107NE 25hrs", ["NGC 2992", "NGC 1052", "NGC 660", "NGC 1068"]),
+]:
+    for _n in _names:
+        MEERKAT_PROGRAMME[_n] = _prog
+
+
+def meerkat_status(name):
+    return MEERKAT_PROGRAMME.get(name, "")
+
+
+def observations_table(groups):
+    """Same shape as sample_table() -- grouped rows, same order, same
+    per-group colour classes -- but the last two columns are MeerKAT
+    programme and VST imaging status instead of galaxy type and Image."""
+    head_cells = ["Name", "RA [J2000]", "Dec [J2000]",
+                  "D<span style=\"font-size: 0.75rem;\">L</span> [Mpc]",
+                  "MeerKAT", "VST"]
+    ths = "".join('\n                <th class="u-border-1 u-border-grey-30 '
+                  'u-table-cell">%s</th>' % c for c in head_cells)
+    trs = ""
+    for key, label, ref, url, grp in groups:
+        head = label
+        if ref:
+            head += " &mdash; " + ('<a href="%s" target="_blank" '
+                                   'class="u-sample-ref">%s</a>' % (url, ref))
+        head += ' <span class="u-sample-count">(%d objects)</span>' % len(grp)
+        trs += ('\n              <tr class="u-sample-group u-sample-%s">'
+                '\n                <td class="u-border-1 u-border-grey-30 '
+                'u-table-cell" colspan="%d">%s</td>\n              </tr>'
+                % (key, len(head_cells), head))
+        for r in grp:
+            nm = r["name"]
+            if r.get("ned_url"):
+                nm = ('<a href="%s" target="_blank" class="u-active-none '
+                      'u-border-none u-btn u-button-link u-button-style '
+                      'u-hover-none u-none u-text-hover-palette-1-base '
+                      'u-text-white">%s</a>' % (r["ned_url"], r["name"]))
+            cells = [nm, r["ra"], r["dec"], r["dl_mpc"] or "–",
+                     meerkat_status(r["name"]), vst_status(r["name"])]
+            tds = "".join('\n                <td class="u-border-1 '
+                          'u-border-grey-30 u-table-cell">%s</td>' % c
+                          for c in cells)
+            row_cls = ("other-" + agn_class(r["agn_type"])) if key == "other" else key
+            trs += ('\n              <tr class="u-sample-%s" '
+                    'style="height: 40px;">%s\n              </tr>' % (row_cls, tds))
+    return """<table class="u-table-entity u-table-entity-1">
+            <colgroup>
+              <col width="18%%"><col width="14%%"><col width="14%%"><col width="8%%"><col width="24%%"><col width="22%%">
+            </colgroup>
+            <thead class="u-black u-table-header u-table-header-1">
+              <tr style="height: 46px;">%s
+              </tr>
+            </thead>
+            <tbody class="u-align-center u-table-body">%s
+            </tbody>
+          </table>""" % (ths, trs)
+
+
+OBSERVATIONS_INTRO = (
+    'The table below lists the same {N} galaxies as the '
+    '{SAMPLE_LINK}, in the same order, with each source\'s MeerKAT '
+    'programme and VST optical imaging status in place of galaxy type '
+    'and cutout links.&nbsp;<br><br>{GROUPS} Rows are grouped by '
+    'subsample and, within each group, sorted by increasing luminosity '
+    'distance. {LEGEND}')
+
+
+def build_observations(rows):
+    groups = group_rows(rows)
+    intro = (OBSERVATIONS_INTRO
+             .replace("{N}", str(len(rows)))
+             .replace("{SAMPLE_LINK}", link("Sample.html", "Sample table", 1))
+             .replace("{GROUPS}", sample_groups_sentence(groups))
+             .replace("{LEGEND}", sample_legend(groups)))
     s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="sec-obs1">
       <div class="u-clearfix u-sheet u-sheet-1">
-        <p class="u-text u-text-default u-text-1">Observations content coming soon.</p>
+        <h2 class="u-align-left u-text u-text-1">Observations</h2>
+        <p class="u-align-left u-text u-text-2">%s</p>
       </div>
-    </section>"""
-    desc = "MAGNHIFFIC observing status and plans."
-    write("Observations.html", page("Observations", "Observations.css", [s1], desc))
-    write_css("Observations.css", tpl_css("_observations_sec1.css"))
+    </section>""" % intro
+
+    s2 = """<section class="u-align-center u-black u-clearfix u-section-2" id="sec-obs2">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        <div class="u-expanded-width u-table u-table-1">
+          %s
+        </div>
+      </div>
+    </section>""" % observations_table(groups)
+
+    desc = ("MeerKAT and VST observation status for the %d MAGNHIFFIC "
+            "sample galaxies." % len(rows))
+    write("Observations.html", page("Observations", "Observations.css", [s1, s2], desc))
+
+    sec2 = """ .u-section-2 {
+  background-image: none;
+}
+
+.u-section-2 .u-sheet-1 {
+  min-height: 1400px;
+}
+
+.u-section-2 .u-table-1 {
+  margin: 20px auto 60px;
+}
+
+.u-section-2 .u-table-entity-1 {
+  font-size: 0.875rem;
+}
+
+.u-section-2 .u-table-header-1 {
+  font-weight: 700;
+}
+
+@media (max-width: 1199px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 1300px;
+  }
+
+  .u-section-2 .u-table-entity-1 {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 1240px;
+  }
+
+  .u-section-2 .u-table-entity-1 {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 1240px;
+  }
+
+  .u-section-2 .u-table-1 {
+    overflow-x: auto;
+  }
+
+  .u-section-2 .u-table-entity-1 {
+    font-size: 0.6875rem;
+    min-width: 640px;
+  }
+}"""
+    write_css("Observations.css", tpl_css("_observations_sec1.css") + "\n\n" + sec2)
 
 
 # ------------------------------------------------------- password-gated pages
@@ -2661,7 +2834,7 @@ def build_all():
     build_team()
     build_public_data()
     build_contact()
-    build_observations()
+    build_observations(rows)
     build_data()
     build_gallery()
     build_releases()
