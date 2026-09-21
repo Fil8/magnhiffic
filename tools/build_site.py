@@ -1216,7 +1216,9 @@ def build_science():
              '                  <p class="u-align-justify u-text u-text-2"> %s\n'
              '                  </p>' % SCI_1.replace("{MEERKAT}", meerkat(1)))
     s1 = two_col("carousel_0fe1", 1, left1,
-                 circle_img("beamNhiwhiteNo.jpg", 730, 730, 1))
+                 plain_img("sensPlot.png", 1100, 1100, 1,
+                           extra="u-image-contain u-image-default "
+                                 "u-preserve-proportions"))
 
     right2 = ('<p class="u-align-justify u-text u-text-1"> %s\n'
               '                  </p>'
@@ -1294,9 +1296,7 @@ def build_science():
 
 .u-section-1 .u-image-1 {
   width: 420px;
-  height: 420px;
-  background-image: url("images/beamNhiwhiteNo.jpg");
-  background-position: 50% 50%;
+  height: auto;
   margin: 0 auto;
 }
 
@@ -1315,7 +1315,6 @@ def build_science():
 
   .u-section-1 .u-image-1 {
     width: 360px;
-    height: 360px;
   }
 }
 
@@ -1334,7 +1333,6 @@ def build_science():
 
   .u-section-1 .u-image-1 {
     width: 284px;
-    height: 284px;
   }
 }
 
@@ -1358,7 +1356,6 @@ def build_science():
 
   .u-section-1 .u-image-1 {
     width: 340px;
-    height: 340px;
   }
 }
 
@@ -1369,7 +1366,6 @@ def build_science():
 
   .u-section-1 .u-image-1 {
     width: 296px;
-    height: 296px;
   }
 }"""
 

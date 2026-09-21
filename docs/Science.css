@@ -45,9 +45,7 @@
 
 .u-section-1 .u-image-1 {
   width: 420px;
-  height: 420px;
-  background-image: url("images/beamNhiwhiteNo.jpg");
-  background-position: 50% 50%;
+  height: auto;
   margin: 0 auto;
 }
 
@@ -66,7 +64,6 @@
 
   .u-section-1 .u-image-1 {
     width: 360px;
-    height: 360px;
   }
 }
 
@@ -85,7 +82,6 @@
 
   .u-section-1 .u-image-1 {
     width: 284px;
-    height: 284px;
   }
 }
 
@@ -109,7 +105,6 @@
 
   .u-section-1 .u-image-1 {
     width: 340px;
-    height: 340px;
   }
 }
 
@@ -120,7 +115,6 @@
 
   .u-section-1 .u-image-1 {
     width: 296px;
-    height: 296px;
   }
 }
 
