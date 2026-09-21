@@ -2180,22 +2180,21 @@ def observations_table(groups):
           </table>""" % (ths, trs)
 
 
+# No subsample sentence and no colour legend here, unlike SAMPLE_INTRO: the
+# table below carries its own coloured group label rows, which say the same
+# thing in place.
 OBSERVATIONS_INTRO = (
     'The table below lists the same {N} galaxies as the '
     '{SAMPLE_LINK}, in the same order, with each source\'s MeerKAT '
     'programme and VST optical imaging status in place of galaxy type '
-    'and cutout links.&nbsp;<br><br>{GROUPS} Rows are grouped by '
-    'subsample and, within each group, sorted by increasing luminosity '
-    'distance. {LEGEND}')
+    'and cutout links.&nbsp;')
 
 
 def build_observations(rows):
     groups = group_rows(rows)
     intro = (OBSERVATIONS_INTRO
              .replace("{N}", str(len(rows)))
-             .replace("{SAMPLE_LINK}", link("Sample.html", "Sample table", 1))
-             .replace("{GROUPS}", sample_groups_sentence(groups))
-             .replace("{LEGEND}", sample_legend(groups)))
+             .replace("{SAMPLE_LINK}", link("Sample.html", "Sample table", 1)))
     s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="sec-obs1">
       <div class="u-clearfix u-sheet u-sheet-1">
         <h2 class="u-align-left u-text u-text-1">Observations</h2>
