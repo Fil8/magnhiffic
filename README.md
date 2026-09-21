@@ -108,3 +108,19 @@ Page geometry comes from the per-page stylesheets, split out of the template's
 own and reused verbatim where the content shape was unchanged. Each has four
 breakpoints (1199 / 991 / 767 / 575 px). If you add content to a section, its
 `min-height` may need raising in all four.
+
+## Figures
+
+Source figures live in `figures/`. The site cannot display a PDF, so each one
+is rendered to a raster in `docs/images/` and it is that raster the pages
+reference — keep the source here so the rendering can be redone at a different
+size, or the figure regenerated from it.
+
+`figures/sensPlot.pdf` is the column-density-vs-resolution plot on the Science
+page. It was rendered at roughly 2.5x its 560px display width with:
+
+    pdftoppm -png -r 200 figures/sensPlot.pdf /tmp/sensPlot
+    sips -Z 1100 /tmp/sensPlot-1.png --out docs/images/sensPlot.png
+
+`docs/images/` also holds photographs and survey images that have no PDF source;
+those are simply the originals.
