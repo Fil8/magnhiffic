@@ -1663,9 +1663,7 @@ def build_sample(rows):
              .replace("{LEGEND}", sample_legend(groups))
              .replace("{ASCII}", link("files/magnhiffic_sample.txt",
                                       "ascii version", 1, external=True))
-             .replace("{NED}", link("https://ned.ipac.caltech.edu/",
-                                    "NASA/IPAC Extragalactic Database", 2,
-                                    external=True)))
+             .replace("{NED}", "NED"))
     s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="carousel_ddcf">
       <div class="u-clearfix u-sheet u-sheet-1">
         <h2 class="u-align-left u-text u-text-1">Sample List</h2>
