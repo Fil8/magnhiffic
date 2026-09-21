@@ -1786,6 +1786,22 @@ PUB_USING = [
      "https://ui.adsabs.harvard.edu/abs/2025A%26A...697A..86M/abstract"),
 ]
 
+# Earlier papers by the team that led up to MAGNHIFFIC, listed as "project
+# precursor publications". Add entries as (auth, title, url); the page renders
+# any number, and the section disappears if the list is emptied.
+PUB_PRECURSOR = [
+    ("Maccagni et al. (2026)",
+     "AGN Feeding &amp; Feedback Over the Galactic Scales",
+     "https://ui.adsabs.harvard.edu/abs/2026arXiv260631847M/abstract"),
+    ("Maccagni et al. (2021)",
+     "AGN feeding and feedback in Fornax A: kinematical analysis of the "
+     "multi-phase ISM",
+     "https://ui.adsabs.harvard.edu/abs/2021A%26A...656A..45M/abstract"),
+    ("Maccagni et al. (2020)",
+     "The flickering nuclear activity of Fornax A",
+     "https://ui.adsabs.harvard.edu/abs/2020A%26A...634A...9M/abstract"),
+]
+
 # The sample-selection references cited on the Science page, listed as
 # "background papers". Add entries as (auth, title, url); the page renders
 # any number.
@@ -1813,6 +1829,7 @@ def _pub_entries(papers):
 def build_publications():
     project_entries = _pub_entries(PUB_PROJECT)
     using_entries = _pub_entries(PUB_USING)
+    precursor_entries = _pub_entries(PUB_PRECURSOR)
     background_entries = _pub_entries(PUB_BACKGROUND)
 
     # The middle section is dropped entirely when PUB_USING is empty, rather
@@ -1824,6 +1841,16 @@ def build_publications():
             'Papers using MAGNHIFFIC observations</h4>'
             '\n                  <p class="u-align-left u-text u-text-6">%s'
             '\n                  </p>' % using_entries)
+
+    # Same treatment for the precursor list, which sits just above the
+    # background papers.
+    precursor_block = ""
+    if PUB_PRECURSOR:
+        precursor_block = (
+            '\n                  <h4 class="u-align-center u-text u-text-4">'
+            'Project precursor publications</h4>'
+            '\n                  <p class="u-align-left u-text u-text-6">%s'
+            '\n                  </p>' % precursor_entries)
 
     s1 = """<section class="u-black u-clearfix u-section-1" id="carousel_0fe1">
       <div class="u-clearfix u-sheet u-sheet-1">
@@ -1838,7 +1865,7 @@ def build_publications():
                     <br>
                   </p>
                   <p class="u-align-left u-text u-text-6">%s
-                  </p>%s
+                  </p>%s%s
                   <h4 class="u-align-center u-text u-text-4">Background papers</h4>
                   <p class="u-align-justify u-text u-text-5">The papers below present the molecular and ionised gas observations on which the MAGNHIFFIC sample selection is based.<br>
                     <br>
@@ -1851,7 +1878,8 @@ def build_publications():
           </div>
         </div>
       </div>
-    </section>""" % (project_entries, using_block, background_entries)
+    </section>""" % (project_entries, using_block, precursor_block,
+                     background_entries)
 
     desc = "Publications of the MAGNHIFFIC survey and the background papers behind its sample selection."
     write("Publications.html", page("Publications", "Publications.css", [s1], desc))
