@@ -894,12 +894,16 @@ def build_home():
       </div>
     </section>""" % (WORDMARK_FULL, HOME_BLURB.replace("{MEERKAT}", meerkat(1)))
 
-    imgs = HOME_GALLERY
-    if not all(os.path.exists(os.path.join(SITE, "images", f)) for f in imgs):
-        missing = [f for f in imgs
-                   if not os.path.exists(os.path.join(SITE, "images", f))]
-        print("  note: Home gallery falling back - missing %s" % ", ".join(missing))
-        imgs = HOME_GALLERY_FALLBACK
+    imgs = []
+    missing = []
+    for target, fallback in zip(HOME_GALLERY, HOME_GALLERY_FALLBACK):
+        if os.path.exists(os.path.join(SITE, "images", target)):
+            imgs.append(target)
+        else:
+            imgs.append(fallback)
+            missing.append(target)
+    if missing:
+        print("  note: Home gallery using fallback for %s" % ", ".join(missing))
     gal = gallery([(f, "", "") for f in imgs])
 
     # Section 2 of the old layout (the "Information on MAGNHIFFIC" card grid) is
