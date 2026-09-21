@@ -1945,6 +1945,7 @@ def build_publications():
 # any number.
 TEAM = [
     "Filippo M. Maccagni, INAF \u2013 Osservatorio Astronomico di Cagliari, Italy",
+    "Erwin de Blok, ASTRON, the Netherlands",
     "Julia Healy, University of Manchester, UK",
     "Alessandro Loni, INAF - Osservatorio di Capodimonte, Italy",
     "Spheshile Makhathini, University of Witswatersrand (WITS), South Africa",
