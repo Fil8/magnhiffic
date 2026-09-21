@@ -1787,7 +1787,7 @@ PUB_USING = [
 ]
 
 # Earlier papers by the team that led up to MAGNHIFFIC, listed as "project
-# precursor publications". Add entries as (auth, title, url); the page renders
+# precursor papers". Add entries as (auth, title, url); the page renders
 # any number, and the section disappears if the list is emptied.
 PUB_PRECURSOR = [
     ("Maccagni et al. (2026)",
@@ -1848,7 +1848,7 @@ def build_publications():
     if PUB_PRECURSOR:
         precursor_block = (
             '\n                  <h4 class="u-align-center u-text u-text-4">'
-            'Project precursor publications</h4>'
+            'Project precursor papers</h4>'
             '\n                  <p class="u-align-left u-text u-text-6">%s'
             '\n                  </p>' % precursor_entries)
 
