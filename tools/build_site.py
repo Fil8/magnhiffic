@@ -1944,10 +1944,11 @@ def build_publications():
 # Add team members as "Name, Institute, Country" strings; the page renders
 # any number.
 TEAM = [
-    "Filippo M. Maccagni (PI), INAF \u2013 Osservatorio Astronomico di Cagliari, Italy",
+    "Filippo M. Maccagni, INAF \u2013 Osservatorio Astronomico di Cagliari, Italy",
     "Julia Healy, University of Manchester, UK",
     "Alessandro Loni, INAF - Osservatorio di Capodimonte, Italy",
     "Spheshile Makhathini, University of Witswatersrand (WITS), South Africa",
+    "Isabella Prandoni, INAF - Istituto di Radioastronomia, Italy",
     "Rossella Ragusa, INAF - Osservatorio di Capodimonte, Italy",
     "Karina Santana, University of Witswatersrand (WITS), South Africa",
 ]
