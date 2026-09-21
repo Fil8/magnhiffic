@@ -236,30 +236,29 @@
 
 .u-section-2 .u-home-gallery-title {
   font-weight: 700;
-  font-size: 1.5rem;
-  margin: 40px auto 0;
+  font-size: 1.125rem;
+  margin: 82px 0 0;
 }
 
 .u-section-2 .u-gallery-1 {
   width: 1140px;
   height: 240px;
-  margin: 20px auto 60px 0;
+  margin: 14px auto 60px 0;
 }
 
 .u-section-2 .u-gallery-inner-1 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, auto);
   grid-gap: 10px;
 }
 
 .u-section-2 .u-over-slide-1,
 .u-section-2 .u-over-slide-2,
 .u-section-2 .u-over-slide-3 {
-  background-image: linear-gradient(0deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35));
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
   padding: 20px;
 }
 
-/* The strip currently holds two images: keep their captions on screen all
-   the time instead of the framework's default hover-only reveal. */
+/* Captions stay on screen instead of the framework's hover-only reveal. */
 .u-section-2 .u-gallery-1 .u-over-slide {
   opacity: 1;
 }
@@ -352,7 +351,11 @@
 
   .u-section-2 .u-gallery-1 {
     width: 720px;
-    height: 222px;
+    height: 455px;
+  }
+
+  .u-section-2 .u-gallery-inner-1 {
+    grid-template-columns: repeat(2, auto);
   }
 }
 
@@ -392,7 +395,7 @@
 
   .u-section-2 .u-gallery-1 {
     width: 540px;
-    height: 680px;
+    height: 1024px;
   }
 
   .u-section-2 .u-gallery-inner-1 {

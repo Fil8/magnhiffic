@@ -92,8 +92,9 @@ NAV = [
 # Data is reachable via the "Data" dropdown item above, which points at it.
 # Team Data, Releases and Projects are no longer linked from the Team nav
 # dropdown either (Team now points straight at Team.html); they stay
-# reachable via the cards on the Team Data page (see DATA_CARDS). Gallery
-# is promoted to its own top-level nav item instead.
+# reachable via the cards on the Team Data page (see DATA_CARDS). The
+# "Gallery" nav item is the PUBLIC gallery (build_public_gallery); the
+# team's password-gated one lives at Team-Gallery.html (build_gallery).
 
 WORDMARK_FULL = "MeerKAT AGN HI Feeding &amp; Feedback Investigation Close-by"
 
@@ -595,30 +596,29 @@ def home_sec2_css():
 
 .u-section-2 .u-home-gallery-title {
   font-weight: 700;
-  font-size: 1.5rem;
-  margin: 40px auto 0;
+  font-size: 1.125rem;
+  margin: 82px 0 0;
 }
 
 .u-section-2 .u-gallery-1 {
   width: 1140px;
   height: 240px;
-  margin: 20px auto 60px 0;
+  margin: 14px auto 60px 0;
 }
 
 .u-section-2 .u-gallery-inner-1 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, auto);
   grid-gap: 10px;
 }
 
 .u-section-2 .u-over-slide-1,
 .u-section-2 .u-over-slide-2,
 .u-section-2 .u-over-slide-3 {
-  background-image: linear-gradient(0deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35));
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
   padding: 20px;
 }
 
-/* The strip currently holds two images: keep their captions on screen all
-   the time instead of the framework's default hover-only reveal. */
+/* Captions stay on screen instead of the framework's hover-only reveal. */
 .u-section-2 .u-gallery-1 .u-over-slide {
   opacity: 1;
 }
@@ -711,7 +711,11 @@ def home_sec2_css():
 
   .u-section-2 .u-gallery-1 {
     width: 720px;
-    height: 222px;
+    height: 455px;
+  }
+
+  .u-section-2 .u-gallery-inner-1 {
+    grid-template-columns: repeat(2, auto);
   }
 }
 
@@ -751,7 +755,7 @@ def home_sec2_css():
 
   .u-section-2 .u-gallery-1 {
     width: 540px;
-    height: 680px;
+    height: 1024px;
   }
 
   .u-section-2 .u-gallery-inner-1 {
@@ -858,11 +862,10 @@ HOME_MORE = (
     'conditions and the total mass of the multi-phase outflows, and investigate '
     'their impact on the star formation of the host galaxies.&nbsp;')
 
-# Home gallery strip. Swap in the three new science images once the files are in
-# docs/images/ - build_home() falls back per-slot (or drops the slot, if a
-# fallback isn't given) until they are. Titles are shown as an always-on
-# caption over each image (see home_sec2_css(), sized for today's 2-image
-# case -- revisit the grid/heights there if a third image lands).
+# Gallery images, shown both as the Home strip and on Gallery.html. Swap in
+# the three new science images once the files are in docs/images/ -
+# gallery_items() falls back per-slot (or drops the slot, if a fallback isn't
+# given) until they are. Titles show as an always-on caption over each image.
 HOME_GALLERY = [
     "NGC3100_group_opt_hi.jpg",
     "cenA_axes.jpg",
@@ -879,7 +882,26 @@ HOME_GALLERY_FALLBACK = [
     "fornaxAcontHI.jpg",
 ]
 
-MEERKAT_LINK_ATTRS = ('class="u-active-none u-border-none u-btn u-button-link '
+
+def gallery_items(announce=False):
+    """(image, title) pairs for the slots whose image exists on disk."""
+    items = []
+    missing = []
+    for target, fallback, title in zip(HOME_GALLERY, HOME_GALLERY_FALLBACK,
+                                       HOME_GALLERY_TITLES):
+        if os.path.exists(os.path.join(SITE, "images", target)):
+            items.append((target, title))
+        elif fallback:
+            items.append((fallback, title))
+            missing.append(target)
+        else:
+            missing.append(target)
+    if missing and announce:
+        print("  note: gallery has no image yet for %s" % ", ".join(missing))
+    return items
+
+
+MEERKAT_LINK_ATTRS =('class="u-active-none u-border-none u-btn u-button-link '
                       'u-button-style u-hover-none u-none u-text-palette-1-base '
                       'u-btn-%d" target="_blank"')
 
@@ -915,20 +937,7 @@ def build_home():
       </div>
     </section>""" % (WORDMARK_FULL, HOME_BLURB.replace("{MEERKAT}", meerkat(1)))
 
-    imgs = []
-    missing = []
-    for target, fallback, title in zip(HOME_GALLERY, HOME_GALLERY_FALLBACK,
-                                        HOME_GALLERY_TITLES):
-        if os.path.exists(os.path.join(SITE, "images", target)):
-            imgs.append((target, title))
-        elif fallback:
-            imgs.append((fallback, title))
-            missing.append(target)
-        else:
-            missing.append(target)
-    if missing:
-        print("  note: Home gallery has no image yet for %s" % ", ".join(missing))
-    gal = gallery([(f, t, "") for f, t in imgs])
+    gal = gallery([(f, t, "") for f, t in gallery_items(announce=True)])
 
     # Section 2 of the old layout (the "Information on MAGNHIFFIC" card grid) is
     # gone: its five buttons now live in the star, in the right-hand cell here.
@@ -952,7 +961,7 @@ def build_home():
             </div>
           </div>
         </div>
-        <h4 class="u-align-center u-text u-home-gallery-title">Gallery</h4>
+        <h4 class="u-text u-home-gallery-title">Gallery</h4>
         %s
       </div>
     </section>""" % (HOME_MORE.replace("{MEERKAT}", meerkat(1)),
@@ -2595,7 +2604,7 @@ def build_observations(rows):
 # page is renamed accordingly.
 
 TEAM_PASSWORD = "magnhiffic"
-GATE_SALTS = {"Data": "0f41", "Gallery": "0912",
+GATE_SALTS = {"Data": "0f41", "Team-Gallery": "0912",
               "Releases": "37f1", "Projects": "37f1"}
 
 
@@ -2638,7 +2647,7 @@ DATA_CARDS = [
      "Releases.html", "Releases"),
     ("860766-ab3e1c93.png", "Gallery",
      "Link to the page containing MAGNHIFFIC images and posters",
-     "Gallery.html", "Gallery"),
+     "Team-Gallery.html", "Gallery"),
     ("1087927-e922035e.png", "Projects",
      "Link to the page describing on-going papers and projects",
      "Projects.html", "Projects"),
@@ -2666,10 +2675,108 @@ def build_data():
               tpl_css("_data_sec2.css"))
 
 
-# ---- Gallery
+# ---- Gallery (public): the two survey images, also shown on the Home strip
+
+def build_public_gallery():
+    s1 = banner("carousel_ddcf", 1, "Gallery", "MAGNHIFFIC survey images.")
+
+    gal = gallery([(f, t, "") for f, t in gallery_items()])
+    s2 = """<section class="u-align-center u-black u-clearfix u-section-2" id="sec-gal">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        %s
+      </div>
+    </section>""" % gal
+
+    write("Gallery.html", page("Gallery", "Gallery.css", [s1, s2],
+                               "MAGNHIFFIC survey images."))
+
+    sec2 = """ .u-section-2 {
+  background-image: none;
+}
+
+.u-section-2 .u-sheet-1 {
+  min-height: 500px;
+}
+
+.u-section-2 .u-gallery-1 {
+  min-height: 380px;
+  width: 1140px;
+  margin: 40px auto 60px;
+}
+
+.u-section-2 .u-gallery-inner-1 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 380px;
+  gap: 10px;
+}
+
+.u-section-2 .u-over-slide-1,
+.u-section-2 .u-over-slide-2 {
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
+  padding: 20px;
+}
+
+/* Captions stay on screen instead of the framework's hover-only reveal. */
+.u-section-2 .u-gallery-1 .u-over-slide {
+  opacity: 1;
+}
+
+.u-section-2 .u-gallery-heading {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 1199px) {
+  .u-section-2 .u-gallery-1 {
+    width: 940px;
+  }
+
+  .u-section-2 .u-gallery-inner-1 {
+    grid-auto-rows: 310px;
+  }
+}
+
+@media (max-width: 991px) {
+  .u-section-2 .u-gallery-1 {
+    width: 720px;
+  }
+
+  .u-section-2 .u-gallery-inner-1 {
+    grid-auto-rows: 240px;
+  }
+}
+
+@media (max-width: 767px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 700px;
+  }
+
+  .u-section-2 .u-gallery-1 {
+    width: 540px;
+  }
+
+  .u-section-2 .u-gallery-inner-1 {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 300px;
+  }
+}
+
+@media (max-width: 575px) {
+  .u-section-2 .u-gallery-1 {
+    width: 340px;
+  }
+
+  .u-section-2 .u-gallery-inner-1 {
+    grid-auto-rows: 200px;
+  }
+}"""
+    write_css("Gallery.css", tpl_css("_gallery_sec1.css") + "\n\n" + sec2)
+
+
+# ---- Team Gallery (password protected, linked from the Team Data hub)
 
 def build_gallery():
-    build_gate("Gallery", "Gallery")
+    build_gate("Team-Gallery", "Team Gallery")
 
     s1 = banner("carousel_ddcf", 1, "Image Gallery",
                 "MAGNHIFFIC images and sample posters.")
@@ -2694,7 +2801,7 @@ def build_gallery():
       </div>
     </section>""" % gallery(items)
 
-    build_protected("Gallery", "Gallery", "Gallery.css", [s1, s2],
+    build_protected("Team-Gallery", "Team Gallery", "Team-Gallery.css", [s1, s2],
                     "MAGNHIFFIC image gallery.")
 
     sec2 = """ .u-section-2 {
@@ -2795,7 +2902,7 @@ def build_gallery():
     grid-auto-rows: 200px;
   }
 }"""
-    write_css("Gallery.css", tpl_css("_gallery_sec1.css") + "\n\n" + sec2)
+    write_css("Team-Gallery.css", tpl_css("_gallery_sec1.css") + "\n\n" + sec2)
 
 
 # ---- Releases
@@ -2938,6 +3045,7 @@ def build_all():
     build_contact()
     build_observations(rows)
     build_data()
+    build_public_gallery()
     build_gallery()
     build_releases()
     build_projects()
