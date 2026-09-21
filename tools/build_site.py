@@ -593,22 +593,39 @@ def home_sec2_css():
 
 /* ------------------------------------------------------------ the gallery */
 
+.u-section-2 .u-home-gallery-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 40px auto 0;
+}
+
 .u-section-2 .u-gallery-1 {
   width: 1140px;
   height: 240px;
-  margin: 82px auto 60px 0;
+  margin: 20px auto 60px 0;
 }
 
 .u-section-2 .u-gallery-inner-1 {
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
 }
 
 .u-section-2 .u-over-slide-1,
 .u-section-2 .u-over-slide-2,
 .u-section-2 .u-over-slide-3 {
-  background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35));
   padding: 20px;
+}
+
+/* The strip currently holds two images: keep their captions on screen all
+   the time instead of the framework's default hover-only reveal. */
+.u-section-2 .u-gallery-1 .u-over-slide {
+  opacity: 1;
+}
+
+.u-section-2 .u-gallery-heading {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .u-section-2 .u-gallery-item-2,
@@ -694,11 +711,7 @@ def home_sec2_css():
 
   .u-section-2 .u-gallery-1 {
     width: 720px;
-    height: 455px;
-  }
-
-  .u-section-2 .u-gallery-inner-1 {
-    grid-template-columns: repeat(2, auto);
+    height: 222px;
   }
 }
 
@@ -738,7 +751,7 @@ def home_sec2_css():
 
   .u-section-2 .u-gallery-1 {
     width: 540px;
-    height: 1024px;
+    height: 680px;
   }
 
   .u-section-2 .u-gallery-inner-1 {
@@ -847,11 +860,18 @@ HOME_MORE = (
 
 # Home gallery strip. Swap in the three new science images once the files are in
 # docs/images/ - build_home() falls back per-slot (or drops the slot, if a
-# fallback isn't given) until they are.
+# fallback isn't given) until they are. Titles are shown as an always-on
+# caption over each image (see home_sec2_css(), sized for today's 2-image
+# case -- revisit the grid/heights there if a third image lands).
 HOME_GALLERY = [
     "NGC3100_group_opt_hi.jpg",
     "cenA_axes.jpg",
     "NGC_1316_apod.jpg",
+]
+HOME_GALLERY_TITLES = [
+    "NGC3100",
+    "Centaurus A",
+    "Fornax A",
 ]
 HOME_GALLERY_FALLBACK = [
     "2017_meerkat_01-1030x578.jpg",
@@ -897,17 +917,18 @@ def build_home():
 
     imgs = []
     missing = []
-    for target, fallback in zip(HOME_GALLERY, HOME_GALLERY_FALLBACK):
+    for target, fallback, title in zip(HOME_GALLERY, HOME_GALLERY_FALLBACK,
+                                        HOME_GALLERY_TITLES):
         if os.path.exists(os.path.join(SITE, "images", target)):
-            imgs.append(target)
+            imgs.append((target, title))
         elif fallback:
-            imgs.append(fallback)
+            imgs.append((fallback, title))
             missing.append(target)
         else:
             missing.append(target)
     if missing:
         print("  note: Home gallery has no image yet for %s" % ", ".join(missing))
-    gal = gallery([(f, "", "") for f in imgs])
+    gal = gallery([(f, t, "") for f, t in imgs])
 
     # Section 2 of the old layout (the "Information on MAGNHIFFIC" card grid) is
     # gone: its five buttons now live in the star, in the right-hand cell here.
@@ -931,6 +952,7 @@ def build_home():
             </div>
           </div>
         </div>
+        <h4 class="u-align-center u-text u-home-gallery-title">Gallery</h4>
         %s
       </div>
     </section>""" % (HOME_MORE.replace("{MEERKAT}", meerkat(1)),
