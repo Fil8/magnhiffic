@@ -72,13 +72,13 @@ HERO_FONT = THEME["display_font"]
 # Radius of the Home-page star, in percent of its box. Bigger = wider star.
 STAR_RADIUS = 34.0   # node distance from centre, % of the star box
 STAR_BOX = 480       # side of the square the star is drawn in, px
-STAR_NODE = 116      # diameter of each round button, px
+STAR_NODE = 136      # diameter of each round button, px
 
 # ---------------------------------------------------------------- site chrome
 
 NAV = [
     ("Home.html",                "Home",        []),
-    ("Survey.html",              "Project",     [("Science.html", "Science"),
+    ("Science.html",             "Project",     [("Science.html", "Science"),
                                                  ("Sample.html",  "Sample"),
                                                  ("Observations.html", "Observations"),
                                                  ("Public-Data-Release.html", "Data")]),
@@ -141,9 +141,9 @@ def header():
         brand = ('<a href="Home.html" class="u-logo u-wordmark">'
                  '<span class="u-wordmark-text">MAGNHIFFIC</span></a>')
 
-    main = _nav_items(NAV_LINK, {"Survey.html": 2, "Team.html": 3})
+    main = _nav_items(NAV_LINK, {"Science.html": 2, "Team.html": 3})
     coll = _nav_items("u-button-style u-nav-link",
-                      {"Survey.html": 5, "Team.html": 6}, collapsed=True)
+                      {"Science.html": 5, "Team.html": 6}, collapsed=True)
     return """<!-- ==== SHARED HEADER: identical on all pages. Edit here, then run sync_chrome.py (or rebuild). ==== -->
 <header class="u-black u-clearfix u-header u-sticky u-sticky-2694 u-header" id="sec-fe27"><div class="u-clearfix u-sheet u-sheet-1">
         %s
@@ -631,6 +631,14 @@ def home_sec2_css():
   margin: 0 0 6px;
 }
 
+/* The link wraps the image only so it can be clicked through to the full-size
+   file; it must stay transparent to the flex layout, or it would change the
+   rendered image size the breakpoints below are pinned to. */
+.u-section-2 .u-home-gallery-link {
+  display: block;
+  line-height: 0;
+}
+
 .u-section-2 .u-home-gallery-img {
   display: block;
   width: 100%%;
@@ -713,7 +721,7 @@ def home_sec2_css():
   }
 
   .u-section-2 .u-star-label {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
   }
 
   .u-section-2 .u-home-gallery {
@@ -814,12 +822,12 @@ def home_sec2_css():
         {"accent": ACCENT, "box": STAR_BOX, "node": STAR_NODE},
         # box/node at each breakpoint, as a fraction of the desktop size
         **{k % bp: int(v * f) for bp, (bf, nf) in
-           {1199: (0.85, 0.88), 991: (0.65, 0.62),
+           {1199: (0.85, 0.95), 991: (0.65, 0.74),
             767: (0.83, 0.86), 575: (0.80, 0.80)}.items()
            for k, v, f in (("box%d", STAR_BOX, bf), ("node%d", STAR_NODE, nf))},
         **{"icon": int(STAR_NODE * 0.34)},
         **{"icon%d" % bp: int(STAR_NODE * nf * 0.34) for bp, nf in
-           {1199: 0.88, 991: 0.62, 767: 0.86, 575: 0.80}.items()},
+           {1199: 0.95, 991: 0.74, 767: 0.86, 575: 0.80}.items()},
         # the cell must clear the star box plus its 20px top margin and the
         # container padding, or the star pushes the cell taller than the row
         **{"cell%d" % bp: int(STAR_BOX * bf) + 20 + 2 * pad for bp, bf, pad in
@@ -911,8 +919,11 @@ def home_gallery_strip(items):
     figs = "".join(
         '\n          <figure class="u-home-gallery-item">'
         '\n            <figcaption class="u-home-gallery-label">%s</figcaption>'
-        '\n            <img class="u-home-gallery-img" src="images/%s" alt="%s">'
-        '\n          </figure>' % (title, img, title)
+        '\n            <a class="u-home-gallery-link" href="images/%s" '
+        'target="_blank" rel="noopener" title="%s \u2014 view full size">'
+        '\n              <img class="u-home-gallery-img" src="images/%s" alt="%s">'
+        '\n            </a>'
+        '\n          </figure>' % (title, img, title, img, title)
         for img, title in items)
     return '<div class="u-home-gallery">%s\n        </div>' % figs
 
@@ -936,8 +947,8 @@ HOME_STAR = [
      "Sample.html", "sample"),
     ("1087927-e922035e.png", "The Science", "The science behind MAGNHIFFIC",
      "Science.html", "science"),
-    ("4675731-c24b0e52.png", "The Survey", "The MAGNHIFFIC survey and its observations",
-     "Survey.html", "survey"),
+    ("4675731-c24b0e52.png", "The Observations", "The MAGNHIFFIC observations",
+     "Observations.html", "observations"),
     ("1822940-3e8f21d7.png", "The Data",   "A link to MAGNHIFFIC data (team only)",
      "Data.html", "data"),
 ]
@@ -965,7 +976,7 @@ def build_home():
               <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
                 <div class="u-container-layout u-container-layout-1">
                   <h2 class="u-text u-text-1">More Info</h2>
-                  <h6 class="u-custom-font u-text u-text-font u-text-2"> %s
+                  <p class="u-custom-font u-text u-text-font u-text-2"> %s
                   </h6>
                 </div>
               </div>
@@ -1347,92 +1358,6 @@ def build_science():
     min-height: 2140px;
   }
 }""")
-
-
-# -------------------------------------------------------------------- Survey
-
-SURVEY_1 = (
-    'MAGNHIFFIC observes a total of 22 nearby active galaxies with {MEERKAT}, '
-    'spanning different energetic outputs, different ages, different host '
-    'morphologies and different environments. The sample is divided between '
-    'radiative AGN (10 sources) and radio-jetted AGN (12 sources), and is '
-    'described {SAMPLE}.&nbsp;<br>'
-    '<br>The observations reach HI column densities of '
-    '10<span style="font-size: 0.875rem;">18\u201319</span>&nbsp;cm'
-    '<span style="font-size: 0.875rem;">\u22122</span> at kilo-parsec resolution '
-    'or better \u2014 at least 10 times deeper in column density than existing HI '
-    'data of these systems, with spatial and spectral resolution improved by at '
-    'least a factor 3. This is a part of parameter space in AGN studies that has '
-    'not yet been observed with any radio telescope.&nbsp;<br>'
-    '<br>The figure on this page shows the HI column density sensitivity reached '
-    'by MAGNHIFFIC as a function of angular resolution, compared with existing HI '
-    'observations of AGN hosts.&nbsp;')
-
-SURVEY_2 = (
-    'MAGNHIFFIC combines the MeerKAT HI observations with ancillary observations '
-    'of the molecular and ionised gas in the same targets, so that the physical '
-    'conditions and the total mass of the multi-phase inflows and outflows can be '
-    'measured consistently across all gas phases. From the timescales of the '
-    'interaction events, and by quantifying the effects of turbulence on the '
-    'multi-phase IGM and ISM, MAGNHIFFIC will identify the AGN accretion '
-    'mechanisms and study how they sustain recurrent nuclear activity.&nbsp;')
-
-
-def build_survey():
-    left = ('<h2 class="u-text u-text-1">The Survey</h2>\n'
-            '                  <p class="u-align-justify u-text u-text-2"> %s\n'
-            '                  </p>'
-            % SURVEY_1.replace("{MEERKAT}", meerkat(1))
-                     .replace("{SAMPLE}", link("Sample.html", "here", 2)))
-    right = ('<img class="u-image u-image-1" src="images/beamNhiwhiteNo.jpg" '
-             'alt="" data-image-width="730" data-image-height="730">')
-    s1 = """<section class="u-black u-clearfix u-section-1" id="carousel_0fe1">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-clearfix u-layout-wrap u-layout-wrap-1">
-          <div class="u-layout">
-            <div class="u-layout-row">
-              <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
-                <div class="u-container-layout u-container-layout-1">
-                  %s
-                </div>
-              </div>
-              <div class="u-align-center u-container-style u-layout-cell u-shape-rectangle u-size-30 u-layout-cell-2">
-                <div class="u-container-layout u-container-layout-2">
-                  %s
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>""" % (left, right)
-
-    s2 = """<section class="u-black u-clearfix u-section-2" id="carousel_544c">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
-          <div class="u-layout">
-            <div class="u-layout-row">
-              <div class="u-container-style u-image u-layout-cell u-size-30 u-image-1" data-image-width="1030" data-image-height="578">
-                <div class="u-container-layout u-valign-middle u-container-layout-1"></div>
-              </div>
-              <div class="u-align-justify u-container-style u-layout-cell u-size-30 u-layout-cell-2">
-                <div class="u-container-layout u-valign-middle u-container-layout-2">
-                  <h3 class="u-text u-text-1">Multi-phase gas</h3>
-                  <p class="u-text u-text-2"> %s
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>""" % SURVEY_2
-
-    desc = ("The MAGNHIFFIC survey: MeerKAT HI observations of 22 nearby AGN, "
-            "reaching 10^18-19 cm^-2 at kpc resolution.")
-    write("Survey.html", page("Survey", "Survey.css", [s1, s2], desc))
-    write_css("Survey.css", tpl_css("_survey_sec1.css") + "\n\n" +
-              tpl_css("_survey_sec2.css"))
 
 
 # -------------------------------------------------------------------- Sample
@@ -2796,7 +2721,6 @@ def build_all():
     write_theme_css()
     build_home()
     build_science()
-    build_survey()
     import csv as _csv
     with open("sample_table.csv") as fh:
         rows = list(_csv.DictReader(fh))

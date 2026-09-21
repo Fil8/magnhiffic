@@ -181,8 +181,8 @@
 .u-section-2 a.u-star-node {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 116px;
-  height: 116px;
+  width: 136px;
+  height: 136px;
   border-radius: 50%;
   /* The nodes carry no framework colour/button tokens on purpose: u-none
      forces background-color transparent !important on .u-button-style, which
@@ -215,8 +215,8 @@
 
 .u-section-2 .u-star-icon {
   display: block;
-  width: 39px;
-  height: 39px;
+  width: 46px;
+  height: 46px;
 }
 
 .u-section-2 .u-star-icon img {
@@ -261,6 +261,14 @@
   margin: 0 0 6px;
 }
 
+/* The link wraps the image only so it can be clicked through to the full-size
+   file; it must stay transparent to the flex layout, or it would change the
+   rendered image size the breakpoints below are pinned to. */
+.u-section-2 .u-home-gallery-link {
+  display: block;
+  line-height: 0;
+}
+
 .u-section-2 .u-home-gallery-img {
   display: block;
   width: 100%;
@@ -290,13 +298,13 @@
   }
 
   .u-section-2 a.u-star-node {
-    width: 102px;
-    height: 102px;
+    width: 129px;
+    height: 129px;
   }
 
   .u-section-2 .u-star-icon {
-    width: 34px;
-    height: 34px;
+    width: 43px;
+    height: 43px;
   }
 
   .u-section-2 .u-home-gallery {
@@ -333,17 +341,17 @@
   }
 
   .u-section-2 a.u-star-node {
-    width: 71px;
-    height: 71px;
+    width: 100px;
+    height: 100px;
   }
 
   .u-section-2 .u-star-icon {
-    width: 24px;
-    height: 24px;
+    width: 34px;
+    height: 34px;
   }
 
   .u-section-2 .u-star-label {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
   }
 
   .u-section-2 .u-home-gallery {
@@ -376,13 +384,13 @@
   }
 
   .u-section-2 a.u-star-node {
-    width: 99px;
-    height: 99px;
+    width: 116px;
+    height: 116px;
   }
 
   .u-section-2 .u-star-icon {
-    width: 33px;
-    height: 33px;
+    width: 39px;
+    height: 39px;
   }
 
   .u-section-2 .u-star-label {
@@ -426,13 +434,13 @@
   .u-section-2 a.u-star-node {
     position: static;
     transform: none;
-    width: 92px;
-    height: 92px;
+    width: 108px;
+    height: 108px;
   }
 
   .u-section-2 .u-star-icon {
-    width: 31px;
-    height: 31px;
+    width: 36px;
+    height: 36px;
   }
 
   .u-section-2 a.u-star-node:hover,
