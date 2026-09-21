@@ -119,3 +119,17 @@ tr.u-sample-group .u-sample-count { font-weight: 400; opacity: 0.75; }
 .u-sample-key-other          { background-color: #2b2b2b; }
 .u-sample-key-other-seyfert  { background-color: #3d6d92; }
 .u-sample-key-other-radioloud { background-color: #8a4646; }
+
+/* Links set inside a sentence. The template's .u-btn base is a padded
+   button (display: table; padding: 10px 30px; white-space: nowrap), which
+   opens a ~30px gap either side of a link in running prose and stops it
+   wrapping with the text. link() and meerkat() add this class to undo that
+   without touching .u-btn itself, which real buttons still use. */
+a.u-inline-link {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  white-space: normal;
+  vertical-align: baseline;
+  text-align: inherit;
+}

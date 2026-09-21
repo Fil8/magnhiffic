@@ -397,6 +397,20 @@ tr.u-sample-group .u-sample-count { font-weight: 400; opacity: 0.75; }
 .u-sample-key-other          { background-color: %(other_bg)s; }
 .u-sample-key-other-seyfert  { background-color: %(other_seyfert_bg)s; }
 .u-sample-key-other-radioloud { background-color: %(other_radioloud_bg)s; }
+
+/* Links set inside a sentence. The template's .u-btn base is a padded
+   button (display: table; padding: 10px 30px; white-space: nowrap), which
+   opens a ~30px gap either side of a link in running prose and stops it
+   wrapping with the text. link() and meerkat() add this class to undo that
+   without touching .u-btn itself, which real buttons still use. */
+a.u-inline-link {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  white-space: normal;
+  vertical-align: baseline;
+  text-align: inherit;
+}
 """ % t
     return write_css("theme.css", css)
 
@@ -941,8 +955,8 @@ def home_gallery_strip(items):
 
 
 MEERKAT_LINK_ATTRS =('class="u-active-none u-border-none u-btn u-button-link '
-                      'u-button-style u-hover-none u-none u-text-palette-1-base '
-                      'u-btn-%d" target="_blank"')
+                      'u-button-style u-hover-none u-none u-inline-link '
+                      'u-text-palette-1-base u-btn-%d" target="_blank"')
 
 
 def meerkat(n):
@@ -1127,7 +1141,7 @@ def link(href, label, n, external=False, title=None):
     tgt = ' target="_blank"' if external else ""
     ttl = ' title="%s"' % title if title else ""
     return ('<a%s href="%s" class="u-active-none u-border-none u-btn u-button-style '
-            'u-hover-none u-none u-text-palette-1-base u-btn-%d"%s>%s</a>'
+            'u-hover-none u-none u-inline-link u-text-palette-1-base u-btn-%d"%s>%s</a>'
             % (ttl, href, n, tgt, label))
 
 
