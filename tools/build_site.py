@@ -846,7 +846,8 @@ HOME_MORE = (
     'their impact on the star formation of the host galaxies.&nbsp;')
 
 # Home gallery strip. Swap in the three new science images once the files are in
-# docs/images/ - build_home() warns and keeps the old strip until they are.
+# docs/images/ - build_home() falls back per-slot (or drops the slot, if a
+# fallback isn't given) until they are.
 HOME_GALLERY = [
     "NGC3100_group_opt_hi.jpg",
     "cenA_axes.jpg",
@@ -854,7 +855,7 @@ HOME_GALLERY = [
 ]
 HOME_GALLERY_FALLBACK = [
     "2017_meerkat_01-1030x578.jpg",
-    "2018-MeerKAT-4-1030x688.jpg",
+    None,
     "fornaxAcontHI.jpg",
 ]
 
@@ -899,11 +900,13 @@ def build_home():
     for target, fallback in zip(HOME_GALLERY, HOME_GALLERY_FALLBACK):
         if os.path.exists(os.path.join(SITE, "images", target)):
             imgs.append(target)
-        else:
+        elif fallback:
             imgs.append(fallback)
             missing.append(target)
+        else:
+            missing.append(target)
     if missing:
-        print("  note: Home gallery using fallback for %s" % ", ".join(missing))
+        print("  note: Home gallery has no image yet for %s" % ", ".join(missing))
     gal = gallery([(f, "", "") for f in imgs])
 
     # Section 2 of the old layout (the "Information on MAGNHIFFIC" card grid) is
