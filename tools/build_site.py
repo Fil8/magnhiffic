@@ -1588,7 +1588,7 @@ def ned_link(name):
 
 
 def cutout_link(name):
-    """'Image' links to a standalone viewer combining the wide-field and
+    """'DES Image' links to a standalone viewer combining the wide-field and
     zoom-in cutouts, if both were fetched (see build_cutout_viewers), else a
     dash. Not every source has Legacy Survey coverage (a couple of fields in
     this sample fall outside its footprint)."""
@@ -1613,7 +1613,7 @@ def sample_table(groups):
     not here."""
     head_cells = ["Name", "RA [J2000]", "Dec [J2000]",
                   "D<span style=\"font-size: 0.75rem;\">L</span> [Mpc]",
-                  "Galaxy type", "Image"]
+                  "Galaxy type", "DES Image"]
     ths = "".join('\n                <th class="u-border-1 u-border-grey-30 '
                   'u-table-cell">%s</th>' % c for c in head_cells)
     trs = ""
