@@ -1193,211 +1193,160 @@ SCI_PROJECTS = [
 
 
 def build_science():
-    img = lambda f, w, h, n: plain_img(
-        f, w, h, n, extra="u-image-contain u-image-default u-preserve-proportions")
-
-    s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="carousel_0fe1">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        %s
-      </div>
-    </section>""" % img("sensPlot.png", 1100, 1100, 1)
-
-    s2 = """<section class="u-align-center u-black u-clearfix u-section-2" id="carousel_544c">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        %s
-      </div>
-    </section>""" % img("fornaxAcontHI.jpg", 671, 582, 1)
-
-    # projects band
+    """One two-column band: the projects on the left, the figures stacked
+    down the right.  Not two_col(), because that helper centres its right
+    cell vertically -- here the figures have to start level with the text
+    at the top of a much taller left column."""
     proj_html = ""
     for i, (title, qs) in enumerate(SCI_PROJECTS, 1):
         intro = ("This project will combine the results of the MAGNHIFFIC "
                  "observations with hydrodynamical simulations to:"
                  if i == 3 else "This project will investigate:")
         proj_html += """
-        <h5 class="u-text u-text-%d">%d. %s</h5>
-        <p class="u-align-left u-text u-text-%d">%s</p>
-        %s""" % (3 * i, i, title, 3 * i + 1, intro, bullets(qs, 3 * i + 2))
+                  <h5 class="u-text u-text-%d">%d. %s</h5>
+                  <p class="u-align-left u-text u-text-%d">%s</p>
+                  %s""" % (3 * i, i, title, 3 * i + 1, intro, bullets(qs, 3 * i + 2))
 
-    s3 = """<section class="u-black u-clearfix u-section-3" id="sec-d121">
+    left = ('<p class="u-text u-text-2">MAGNHIFFIC is organised around three '
+            'complementary projects</p>%s' % proj_html)
+
+    figs = "".join(
+        '\n                  <img class="u-image u-image-contain '
+        'u-image-default u-preserve-proportions u-image-%d" src="images/%s" '
+        'alt="" data-image-width="%d" data-image-height="%d">'
+        % (n, f, w, h)
+        for n, (f, w, h) in enumerate(
+            [("sensPlot.png", 1100, 1100), ("fornaxAcontHI.jpg", 671, 582)], 1))
+
+    s1 = """<section class="u-black u-clearfix u-section-1" id="sec-d121">
       <div class="u-clearfix u-sheet u-sheet-1">
-        <p class="u-text u-text-2">MAGNHIFFIC is organised around three complementary projects</p>%s
+        <div class="u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
+          <div class="u-layout">
+            <div class="u-layout-row">
+              <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
+                <div class="u-container-layout u-valign-top u-container-layout-1">
+                  %s
+                </div>
+              </div>
+              <div class="u-align-center u-container-style u-layout-cell u-shape-rectangle u-size-30 u-layout-cell-2">
+                <div class="u-container-layout u-valign-top u-container-layout-2">%s
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>""" % proj_html
+    </section>""" % (left, figs)
 
     desc = ("The science of MAGNHIFFIC: HI inflows and outflows, AGN duty cycles "
             "and multi-phase feedback in 22 nearby active galaxies.")
-    write("Science.html", page("Science", "Science.css", [s1, s2, s3], desc))
+    write("Science.html", page("Science", "Science.css", [s1], desc))
 
-    sec1 = """ .u-section-1 {
+    write_css("Science.css", """ .u-section-1 {
   background-image: none;
 }
 
 .u-section-1 .u-sheet-1 {
-  min-height: 700px;
+  min-height: 1120px;
 }
 
-.u-section-1 .u-image-1 {
-  width: 560px;
+.u-section-1 .u-layout-wrap-1 {
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+
+.u-section-1 .u-layout-cell-1,
+.u-section-1 .u-layout-cell-2 {
+  min-height: 100px;
+}
+
+.u-section-1 .u-container-layout-1 {
+  padding: 0 30px 0 0;
+}
+
+.u-section-1 .u-container-layout-2 {
+  padding: 0 0 0 30px;
+}
+
+.u-section-1 .u-image-1,
+.u-section-1 .u-image-2 {
+  width: 100%;
+  max-width: 500px;
   height: auto;
-  margin: 60px auto;
+  margin: 0 auto;
 }
 
-@media (max-width: 1199px) {
-  .u-section-1 .u-sheet-1 {
-    min-height: 600px;
-  }
-
-  .u-section-1 .u-image-1 {
-    width: 480px;
-  }
+.u-section-1 .u-image-2 {
+  margin-top: 40px;
 }
 
-@media (max-width: 991px) {
-  .u-section-1 .u-sheet-1 {
-    min-height: 500px;
-  }
-
-  .u-section-1 .u-image-1 {
-    width: 400px;
-    margin: 40px auto;
-  }
-}
-
-@media (max-width: 767px) {
-  .u-section-1 .u-sheet-1 {
-    min-height: 420px;
-  }
-
-  .u-section-1 .u-image-1 {
-    width: 340px;
-  }
-}
-
-@media (max-width: 575px) {
-  .u-section-1 .u-sheet-1 {
-    min-height: 380px;
-  }
-
-  .u-section-1 .u-image-1 {
-    width: 296px;
-  }
-}"""
-
-    sec2 = """ .u-section-2 {
-  background-image: none;
-}
-
-.u-section-2 .u-sheet-1 {
-  min-height: 620px;
-}
-
-.u-section-2 .u-image-1 {
-  width: 560px;
-  height: auto;
-  margin: 0 auto 60px;
-}
-
-@media (max-width: 1199px) {
-  .u-section-2 .u-sheet-1 {
-    min-height: 540px;
-  }
-
-  .u-section-2 .u-image-1 {
-    width: 480px;
-  }
-}
-
-@media (max-width: 991px) {
-  .u-section-2 .u-sheet-1 {
-    min-height: 460px;
-  }
-
-  .u-section-2 .u-image-1 {
-    width: 400px;
-    margin: 0 auto 40px;
-  }
-}
-
-@media (max-width: 767px) {
-  .u-section-2 .u-sheet-1 {
-    min-height: 380px;
-  }
-
-  .u-section-2 .u-image-1 {
-    width: 340px;
-  }
-}
-
-@media (max-width: 575px) {
-  .u-section-2 .u-sheet-1 {
-    min-height: 340px;
-  }
-
-  .u-section-2 .u-image-1 {
-    width: 296px;
-  }
-}"""
-
-    sec3 = """ .u-section-3 {
-  background-image: none;
-}
-
-.u-section-3 .u-sheet-1 {
-  min-height: 1200px;
-}
-
-.u-section-3 .u-text-2 {
+.u-section-1 .u-text-2 {
   font-weight: 300;
   font-size: 1.125rem;
-  margin: 60px auto 0;
+  margin: 0;
 }
 
-.u-section-3 .u-text-3,
-.u-section-3 .u-text-6,
-.u-section-3 .u-text-9 {
+.u-section-1 .u-text-3,
+.u-section-1 .u-text-6,
+.u-section-1 .u-text-9 {
   font-weight: 700;
   font-size: 1.25rem;
   margin: 46px 0 0;
 }
 
-.u-section-3 .u-text-4,
-.u-section-3 .u-text-7,
-.u-section-3 .u-text-10 {
+.u-section-1 .u-text-4,
+.u-section-1 .u-text-7,
+.u-section-1 .u-text-10 {
   margin: 14px 0 0;
 }
 
-.u-section-3 .u-text-5,
-.u-section-3 .u-text-8,
-.u-section-3 .u-text-11 {
+.u-section-1 .u-text-5,
+.u-section-1 .u-text-8,
+.u-section-1 .u-text-11 {
   line-height: 1.6;
   margin: 12px 0 0 20px;
 }
 
 @media (max-width: 1199px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 1240px;
+  .u-section-1 .u-sheet-1 {
+    min-height: 1180px;
   }
 }
 
 @media (max-width: 991px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 1340px;
+  .u-section-1 .u-sheet-1 {
+    min-height: 1430px;
+  }
+
+  .u-section-1 .u-container-layout-1 {
+    padding: 0 15px 0 0;
+  }
+
+  .u-section-1 .u-container-layout-2 {
+    padding: 0 0 0 15px;
   }
 }
 
 @media (max-width: 767px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 1520px;
+  .u-section-1 .u-sheet-1 {
+    min-height: 2060px;
+  }
+
+  .u-section-1 .u-container-layout-1,
+  .u-section-1 .u-container-layout-2 {
+    padding: 0;
+  }
+
+  .u-section-1 .u-image-1 {
+    margin-top: 40px;
   }
 }
 
 @media (max-width: 575px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 1900px;
+  .u-section-1 .u-sheet-1 {
+    min-height: 2140px;
   }
-}"""
-    write_css("Science.css", sec1 + "\n\n" + sec2 + "\n\n" + sec3)
+}""")
 
 
 # -------------------------------------------------------------------- Survey
