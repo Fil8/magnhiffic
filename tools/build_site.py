@@ -781,7 +781,7 @@ def home_sec2_css():
    plain centred row. Once they are static the inline left/top is ignored. */
 @media (max-width: 575px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 1750px;
+    min-height: 1680px;
   }
 
   .u-section-2 .u-layout-cell-2 {
@@ -816,6 +816,17 @@ def home_sec2_css():
   .u-section-2 a.u-star-node:hover,
   .u-section-2 a.u-star-node:focus {
     transform: scale(1.08);
+  }
+
+  /* The sheet is 340px here; without this the strip keeps the 540px width
+     from the 767 breakpoint and overflows the screen. Height follows the
+     same 540x335 proportion. */
+  .u-section-2 .u-home-gallery {
+    width: 340px;
+  }
+
+  .u-section-2 .u-home-gallery-img {
+    height: 211px;
   }
 }
 """ % dict(
