@@ -8,6 +8,7 @@ the footer acknowledgement, or any page's prose, edit here and re-run.
 """
 import math
 import os, re, hashlib, shutil
+from urllib.parse import quote_plus
 
 SITE = "../docs"   # GitHub Pages publishing root
 
@@ -1377,7 +1378,7 @@ SAMPLE_INTRO = (
     'The table below lists the {N} active galaxies in the MAGNHIFFIC sample and '
     'its reference subsamples. An '
     '{ASCII} of this table is also available. Each object name links to its entry '
-    'in the {NED}.&nbsp;<br>'
+    'in {NED}.&nbsp;<br>'
     '<br>Column densities and distances assume H'
     '<span style="font-size: 0.75rem;">0</span>&nbsp;=&nbsp;67.8 km s'
     '<span style="font-size: 0.75rem;">\u22121</span> Mpc'
@@ -1561,6 +1562,21 @@ def build_cutout_viewers(rows):
             fh.write(_cutout_view_page(name, prev_name, next_name))
 
 
+def ned_link(name):
+    """NED "byname" URL for an object, built from its name in the CSV.
+
+    The CSV also carries a hand-entered ned_url column, but its objname
+    values had drifted -- half of them lost the space ("NGC3100" instead of
+    "NGC 3100"), so NED answered with a search page instead of the object.
+    Deriving the URL from the name column, which is always spelled properly,
+    keeps that from happening again. The cosmology matches the H0 and
+    densities quoted in the table's own intro.
+    """
+    return ("http://ned.ipac.caltech.edu/byname?objname=%s"
+            "&hconst=67.8&omegam=0.308&omegav=0.692&wmap=4&corr_z=1"
+            % quote_plus(name))
+
+
 def cutout_link(name):
     """'Image' links to a standalone viewer combining the wide-field and
     zoom-in cutouts, if both were fetched (see build_cutout_viewers), else a
@@ -1602,12 +1618,11 @@ def sample_table(groups):
                 'u-table-cell" colspan="%d">%s</td>\n              </tr>'
                 % (key, len(head_cells), head))
         for r in grp:
-            nm = r["name"]
-            if r.get("ned_url"):
-                nm = ('<a href="%s" target="_blank" class="u-active-none '
-                      'u-border-none u-btn u-button-link u-button-style '
-                      'u-hover-none u-none u-text-hover-palette-1-base '
-                      'u-text-white">%s</a>' % (r["ned_url"], r["name"]))
+            nm = ('<a href="%s" target="_blank" class="u-active-none '
+                  'u-border-none u-btn u-button-link u-button-style '
+                  'u-hover-none u-none u-text-hover-palette-1-base '
+                  'u-text-white">%s</a>'
+                  % (ned_link(r["name"]), r["name"]))
             cells = [nm, r["ra"], r["dec"], r["dl_mpc"] or "\u2013",
                      r["gal_type"], cutout_link(r["name"])]
             tds = "".join('\n                <td class="u-border-1 '
@@ -2143,12 +2158,11 @@ def observations_table(groups):
                 'u-table-cell" colspan="%d">%s</td>\n              </tr>'
                 % (key, len(head_cells), head))
         for r in grp:
-            nm = r["name"]
-            if r.get("ned_url"):
-                nm = ('<a href="%s" target="_blank" class="u-active-none '
-                      'u-border-none u-btn u-button-link u-button-style '
-                      'u-hover-none u-none u-text-hover-palette-1-base '
-                      'u-text-white">%s</a>' % (r["ned_url"], r["name"]))
+            nm = ('<a href="%s" target="_blank" class="u-active-none '
+                  'u-border-none u-btn u-button-link u-button-style '
+                  'u-hover-none u-none u-text-hover-palette-1-base '
+                  'u-text-white">%s</a>'
+                  % (ned_link(r["name"]), r["name"]))
             cells = [nm, r["ra"], r["dec"], r["dl_mpc"] or "–",
                      meerkat_status(r["name"]), vst_status(r["name"])]
             tds = "".join('\n                <td class="u-border-1 '
