@@ -1157,35 +1157,6 @@ def plain_img(image, w, h, n=1, extra="u-image-circle u-preserve-proportions"):
 
 # ------------------------------------------------------------------- Science
 
-SCI_1 = (
-    'MAGNHIFFIC will probe a part of parameter space in AGN studies that has not '
-    'yet been observed with any radio telescope, enabling us to study the typical '
-    'column densities of the neutral hydrogen (HI) inflows and outflows involved '
-    'in AGN feeding and feedback (10<span style="font-size: 0.75rem;">18\u201319'
-    '</span>&nbsp;cm<span style="font-size: 0.75rem;">\u22122</span>) with '
-    'kilo-parsec resolution, or better.&nbsp;<br>The {MEERKAT} observations '
-    'provide at least 10 times deeper HI column density sensitivity than existing '
-    'data, while improving the spatial and spectral resolution by at least a '
-    'factor 3. MAGNHIFFIC will be the benchmark study of the distribution and '
-    'kinematics of the HI in galaxies hosting an AGN.&nbsp;')
-
-SCI_2 = (
-    'MAGNHIFFIC is a ground-breaking project that for the first time will study '
-    'the process of feeding and feedback in 22 nearby AGN with different '
-    'energetic outputs, different ages, in different hosts and in different '
-    'environments. The sample is divided between radiative AGN (10 sources) and '
-    'radio-jetted AGN (12 sources). Sources have been selected where sensitive '
-    'observations of the molecular and ionised gas showed indications of on-going '
-    'feeding and/or feedback (e.g. Maccagni et al. 2018, Ruffa et al. 2019a, '
-    'Mingozzi et al. 2018, Venturi et al. 2020). The full sample is described '
-    '{SAMPLE}.&nbsp;<br>Combining the HI with the molecular and ionised gas '
-    'observations, MAGNHIFFIC will infer the physical conditions and the total '
-    'mass of the multi-phase outflows, and investigate their impact on the star '
-    'formation of the host galaxies. From the timescales of the interaction '
-    'events, and by quantifying the effects of turbulence on the multi-phase IGM '
-    'and ISM, MAGNHIFFIC will identify the AGN accretion mechanisms and study how '
-    'they sustain recurrent nuclear activity.&nbsp;')
-
 SCI_PROJECTS = [
     ("Cold gas accretion in radiative mode AGN and its effects on star formation",
      ["how is gas funneled from the IGM to the centre of radiative AGN?",
@@ -1212,20 +1183,20 @@ SCI_PROJECTS = [
 
 
 def build_science():
-    left1 = ('<h2 class="u-text u-text-1">The Science</h2>\n'
-             '                  <p class="u-align-justify u-text u-text-2"> %s\n'
-             '                  </p>' % SCI_1.replace("{MEERKAT}", meerkat(1)))
-    s1 = two_col("carousel_0fe1", 1, left1,
-                 plain_img("sensPlot.png", 1100, 1100, 1,
-                           extra="u-image-contain u-image-default "
-                                 "u-preserve-proportions"))
+    img = lambda f, w, h, n: plain_img(
+        f, w, h, n, extra="u-image-contain u-image-default u-preserve-proportions")
 
-    right2 = ('<p class="u-align-justify u-text u-text-1"> %s\n'
-              '                  </p>'
-              % SCI_2.replace("{SAMPLE}", link("Sample.html", "here", 1)))
-    s2 = two_col("carousel_544c", 2,
-                 plain_img("fornaxAcontHI.jpg", 671, 582, 1),
-                 right2, left_class="", right_class="u-align-justify")
+    s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="carousel_0fe1">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        %s
+      </div>
+    </section>""" % img("sensPlot.png", 1100, 1100, 1)
+
+    s2 = """<section class="u-align-center u-black u-clearfix u-section-2" id="carousel_544c">
+      <div class="u-clearfix u-sheet u-sheet-1">
+        %s
+      </div>
+    </section>""" % img("fornaxAcontHI.jpg", 671, 582, 1)
 
     # projects band
     proj_html = ""
@@ -1240,8 +1211,7 @@ def build_science():
 
     s3 = """<section class="u-black u-clearfix u-section-3" id="sec-d121">
       <div class="u-clearfix u-sheet u-sheet-1">
-        <h2 class="u-text u-text-1">MAGNHIFFIC projects</h2>
-        <h5 class="u-text u-text-2">MAGNHIFFIC is organised around three complementary projects</h5>%s
+        <p class="u-text u-text-2">MAGNHIFFIC is organised around three complementary projects</p>%s
       </div>
     </section>""" % proj_html
 
@@ -1254,104 +1224,39 @@ def build_science():
 }
 
 .u-section-1 .u-sheet-1 {
-  min-height: 664px;
-}
-
-.u-section-1 .u-layout-wrap-1 {
-  margin-top: 60px;
-  margin-bottom: 60px;
-}
-
-.u-section-1 .u-layout-cell-1 {
-  min-height: 484px;
-}
-
-.u-section-1 .u-container-layout-1 {
-  padding: 30px;
-}
-
-.u-section-1 .u-text-1 {
-  font-weight: 700;
-  font-size: 2.25rem;
-  margin: 0;
-}
-
-.u-section-1 .u-text-2 {
-  line-height: 1.5;
-  margin: 20px 0 0;
-}
-
-.u-section-1 .u-btn-1 {
-  background-image: none;
-  padding: 0;
-}
-
-.u-section-1 .u-layout-cell-2 {
-  min-height: 484px;
-}
-
-.u-section-1 .u-container-layout-2 {
-  padding: 20px;
+  min-height: 700px;
 }
 
 .u-section-1 .u-image-1 {
-  width: 420px;
+  width: 560px;
   height: auto;
-  margin: 0 auto;
+  margin: 60px auto;
 }
 
 @media (max-width: 1199px) {
   .u-section-1 .u-sheet-1 {
-    min-height: 546px;
-  }
-
-  .u-section-1 .u-layout-cell-1 {
-    min-height: 400px;
-  }
-
-  .u-section-1 .u-layout-cell-2 {
-    min-height: 400px;
+    min-height: 600px;
   }
 
   .u-section-1 .u-image-1 {
-    width: 360px;
+    width: 480px;
   }
 }
 
 @media (max-width: 991px) {
   .u-section-1 .u-sheet-1 {
-    min-height: 442px;
-  }
-
-  .u-section-1 .u-layout-cell-1 {
-    min-height: 324px;
-  }
-
-  .u-section-1 .u-layout-cell-2 {
-    min-height: 324px;
+    min-height: 500px;
   }
 
   .u-section-1 .u-image-1 {
-    width: 284px;
+    width: 400px;
+    margin: 40px auto;
   }
 }
 
 @media (max-width: 767px) {
   .u-section-1 .u-sheet-1 {
-    min-height: 662px;
-  }
-
-  .u-section-1 .u-layout-cell-1 {
-    min-height: 100px;
-  }
-
-  .u-section-1 .u-container-layout-1 {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .u-section-1 .u-layout-cell-2 {
-    min-height: 100px;
+    min-height: 420px;
   }
 
   .u-section-1 .u-image-1 {
@@ -1361,7 +1266,7 @@ def build_science():
 
 @media (max-width: 575px) {
   .u-section-1 .u-sheet-1 {
-    min-height: 600px;
+    min-height: 380px;
   }
 
   .u-section-1 .u-image-1 {
@@ -1377,109 +1282,50 @@ def build_science():
   min-height: 620px;
 }
 
-.u-section-2 .u-layout-wrap-1 {
-  margin-top: 20px;
-  margin-bottom: 60px;
-}
-
-.u-section-2 .u-layout-cell-1 {
-  min-height: 484px;
-}
-
-.u-section-2 .u-container-layout-1 {
-  padding: 20px;
-}
-
 .u-section-2 .u-image-1 {
-  width: 420px;
-  height: 364px;
-  margin: 30px auto 0;
-}
-
-.u-section-2 .u-layout-cell-2 {
-  min-height: 484px;
-}
-
-.u-section-2 .u-container-layout-2 {
-  padding: 30px;
-}
-
-.u-section-2 .u-text-1 {
-  line-height: 1.5;
-  margin: 0;
-}
-
-.u-section-2 .u-btn-1 {
-  background-image: none;
-  padding: 0;
+  width: 560px;
+  height: auto;
+  margin: 0 auto 60px;
 }
 
 @media (max-width: 1199px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 546px;
-  }
-
-  .u-section-2 .u-layout-cell-1 {
-    min-height: 400px;
+    min-height: 540px;
   }
 
   .u-section-2 .u-image-1 {
-    width: 360px;
-    height: 312px;
-  }
-
-  .u-section-2 .u-layout-cell-2 {
-    min-height: 400px;
+    width: 480px;
   }
 }
 
 @media (max-width: 991px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 470px;
-  }
-
-  .u-section-2 .u-layout-cell-1 {
-    min-height: 324px;
+    min-height: 460px;
   }
 
   .u-section-2 .u-image-1 {
-    width: 284px;
-    height: 246px;
-  }
-
-  .u-section-2 .u-layout-cell-2 {
-    min-height: 324px;
+    width: 400px;
+    margin: 0 auto 40px;
   }
 }
 
 @media (max-width: 767px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 700px;
-  }
-
-  .u-section-2 .u-layout-cell-1 {
-    min-height: 100px;
+    min-height: 380px;
   }
 
   .u-section-2 .u-image-1 {
     width: 340px;
-    height: 295px;
-  }
-
-  .u-section-2 .u-layout-cell-2 {
-    min-height: 100px;
-  }
-
-  .u-section-2 .u-container-layout-2 {
-    padding-left: 10px;
-    padding-right: 10px;
   }
 }
 
 @media (max-width: 575px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 340px;
+  }
+
   .u-section-2 .u-image-1 {
     width: 296px;
-    height: 257px;
   }
 }"""
 
@@ -1491,15 +1337,10 @@ def build_science():
   min-height: 1200px;
 }
 
-.u-section-3 .u-text-1 {
-  font-weight: 700;
-  font-size: 2.25rem;
-  margin: 60px auto 0;
-}
-
 .u-section-3 .u-text-2 {
   font-weight: 300;
-  margin: 14px auto 0;
+  font-size: 1.125rem;
+  margin: 60px auto 0;
 }
 
 .u-section-3 .u-text-3,
@@ -1538,10 +1379,6 @@ def build_science():
 @media (max-width: 767px) {
   .u-section-3 .u-sheet-1 {
     min-height: 1520px;
-  }
-
-  .u-section-3 .u-text-1 {
-    font-size: 1.875rem;
   }
 }
 
