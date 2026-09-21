@@ -82,7 +82,7 @@
 }
 
 .u-section-2 .u-sheet-1 {
-  min-height: 860px;
+  min-height: 640px;
 }
 
 .u-section-2 .u-text-1 {
@@ -95,83 +95,120 @@
   margin: 14px auto 0;
 }
 
-.u-section-2 .u-gallery-1 {
-  min-height: 500px;
+/* Three across, as the hover gallery was - but each cell is now title,
+   picture, description stacked, so the row height is the picture plus
+   however tall the description runs. */
+.u-section-2 .u-home-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 10px;
   width: 1140px;
   margin: 30px auto 60px;
 }
 
-.u-section-2 .u-gallery-inner-1 {
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 340px;
-  gap: 10px;
+.u-section-2 .u-home-gallery-item {
+  min-width: 0;
+  margin: 0;
+}
+
+.u-section-2 .u-home-gallery-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  text-align: left;
+}
+
+.u-section-2 .u-home-gallery-link {
+  display: block;
+  line-height: 0;
+}
+
+/* contain, not cover: one of these is the sensitivity plot, and cropping it
+   loses the axis labels at its edges. Photos letterbox against the section's
+   black instead, which is the cheaper cost. */
+.u-section-2 .u-home-gallery-img {
+  display: block;
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+}
+
+.u-section-2 .u-home-gallery-caption {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  margin: 8px 0 0;
+  text-align: left;
 }
 
 @media (max-width: 1199px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 760px;
+    min-height: 590px;
   }
 
   .u-section-2 .u-text-2 {
     width: 940px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 940px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-auto-rows: 280px;
+  .u-section-2 .u-home-gallery-img {
+    height: 250px;
   }
 }
 
 @media (max-width: 991px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 640px;
+    min-height: 575px;
   }
 
   .u-section-2 .u-text-2 {
     width: 720px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 720px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-auto-rows: 220px;
+  .u-section-2 .u-home-gallery-img {
+    height: 190px;
   }
 }
 
 @media (max-width: 767px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 900px;
+    min-height: 1425px;
   }
 
   .u-section-2 .u-text-2 {
     width: 540px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 540px;
+    grid-template-columns: 1fr;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-template-columns: 1fr;
-    grid-auto-rows: 260px;
+  .u-section-2 .u-home-gallery-img {
+    height: 300px;
   }
 }
 
 @media (max-width: 575px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 1235px;
+  }
+
   .u-section-2 .u-text-2 {
     width: 340px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 340px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-auto-rows: 200px;
+  .u-section-2 .u-home-gallery-img {
+    height: 200px;
   }
 }

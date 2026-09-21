@@ -846,23 +846,10 @@ def home_sec2_css():
            [(1199, 0.85, 10), (991, 0.65, 4), (767, 0.83, 10)]})
 
 
-def gallery(items):
-    """items: list of (image, heading, caption)"""
-    inner = "".join(
-        """<div class="u-effect-fade u-gallery-item%s">
-              <div class="u-back-slide">
-                <img class="u-back-image u-expanded" src="images/%s">
-              </div>
-              <div class="u-over-slide u-shading u-over-slide-%d">
-                <h3 class="u-gallery-heading">%s</h3>
-                <p class="u-gallery-text">%s</p>
-              </div>
-            </div>""" % ("" if i == 1 else " u-gallery-item-%d" % i, img, i, head_, cap)
-        for i, (img, head_, cap) in enumerate(items, 1))
-    return ('<div class="u-gallery u-layout-grid u-lightbox u-no-transition '
-            'u-show-text-on-hover u-gallery-1">\n          '
-            '<div class="u-gallery-inner u-gallery-inner-1">\n            %s\n'
-            '          </div>\n        </div>' % inner)
+# The framework's gallery() widget - a grid of images with the heading and
+# caption painted over each one and revealed on hover - used to live here. It
+# lost its last caller when Team-Gallery moved to home_gallery_strip(), so it
+# was removed; see git history if a hover gallery is ever wanted again.
 
 
 # ---------------------------------------------------------------------- Home
@@ -928,15 +915,28 @@ def gallery_items(announce=False):
 
 
 def home_gallery_strip(items):
-    figs = "".join(
-        '\n          <figure class="u-home-gallery-item">'
-        '\n            <figcaption class="u-home-gallery-label">%s</figcaption>'
-        '\n            <a class="u-home-gallery-link" href="images/%s" '
-        'target="_blank" rel="noopener" title="%s \u2014 view full size">'
-        '\n              <img class="u-home-gallery-img" src="images/%s" alt="%s">'
-        '\n            </a>'
-        '\n          </figure>' % (title, img, title, img, title)
-        for img, title in items)
+    """items: (image, title) pairs, or (image, title, caption) triples.
+
+    The title is a plain line above the picture. A caption, where given, is a
+    plain line below it - that is how Team-Gallery shows the descriptions the
+    framework gallery() widget used to paint over the image on hover. The Home
+    strip and the public Gallery pass pairs and so emit no caption at all;
+    their markup must stay byte-identical, so nothing is added for a pair.
+    """
+    figs = ""
+    for item in items:
+        img, title = item[0], item[1]
+        figs += (
+            '\n          <figure class="u-home-gallery-item">'
+            '\n            <figcaption class="u-home-gallery-label">%s</figcaption>'
+            '\n            <a class="u-home-gallery-link" href="images/%s" '
+            'target="_blank" rel="noopener" title="%s \u2014 view full size">'
+            '\n              <img class="u-home-gallery-img" src="images/%s" alt="%s">'
+            '\n            </a>' % (title, img, title, img, title))
+        if len(item) > 2:
+            figs += ('\n            <figcaption class="u-home-gallery-caption">'
+                     '%s</figcaption>' % item[2])
+        figs += '\n          </figure>'
     return '<div class="u-home-gallery">%s\n        </div>' % figs
 
 
@@ -2519,6 +2519,10 @@ def build_gallery():
         ("2018-MeerKAT-1-1030x557.jpg", "MeerKAT",
          "The MeerKAT array in the Karoo, South Africa. Image credit: SARAO."),
     ]
+    # Same markup as the public Gallery and the Home strip: the title is a
+    # plain line above the picture and the description a plain line below it,
+    # rather than the framework gallery() widget's heading and text painted
+    # over the image and shown only on hover.
     s2 = """<section class="u-align-center u-black u-clearfix u-section-2" id="sec-gal">
       <div class="u-clearfix u-sheet u-sheet-1">
         <h4 class="u-align-center u-text u-text-1">Survey images</h4>
@@ -2527,7 +2531,7 @@ def build_gallery():
         [Placeholder &ndash; add sample posters and per-target images as they are produced.]</p>
         %s
       </div>
-    </section>""" % gallery(items)
+    </section>""" % home_gallery_strip(items)
 
     build_protected("Team-Gallery", "Team Gallery", "Team-Gallery.css", [s1, s2],
                     "MAGNHIFFIC image gallery.")
@@ -2537,7 +2541,7 @@ def build_gallery():
 }
 
 .u-section-2 .u-sheet-1 {
-  min-height: 860px;
+  min-height: 640px;
 }
 
 .u-section-2 .u-text-1 {
@@ -2550,84 +2554,121 @@ def build_gallery():
   margin: 14px auto 0;
 }
 
-.u-section-2 .u-gallery-1 {
-  min-height: 500px;
+/* Three across, as the hover gallery was - but each cell is now title,
+   picture, description stacked, so the row height is the picture plus
+   however tall the description runs. */
+.u-section-2 .u-home-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 10px;
   width: 1140px;
   margin: 30px auto 60px;
 }
 
-.u-section-2 .u-gallery-inner-1 {
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 340px;
-  gap: 10px;
+.u-section-2 .u-home-gallery-item {
+  min-width: 0;
+  margin: 0;
+}
+
+.u-section-2 .u-home-gallery-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  text-align: left;
+}
+
+.u-section-2 .u-home-gallery-link {
+  display: block;
+  line-height: 0;
+}
+
+/* contain, not cover: one of these is the sensitivity plot, and cropping it
+   loses the axis labels at its edges. Photos letterbox against the section's
+   black instead, which is the cheaper cost. */
+.u-section-2 .u-home-gallery-img {
+  display: block;
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+}
+
+.u-section-2 .u-home-gallery-caption {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  margin: 8px 0 0;
+  text-align: left;
 }
 
 @media (max-width: 1199px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 760px;
+    min-height: 590px;
   }
 
   .u-section-2 .u-text-2 {
     width: 940px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 940px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-auto-rows: 280px;
+  .u-section-2 .u-home-gallery-img {
+    height: 250px;
   }
 }
 
 @media (max-width: 991px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 640px;
+    min-height: 575px;
   }
 
   .u-section-2 .u-text-2 {
     width: 720px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 720px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-auto-rows: 220px;
+  .u-section-2 .u-home-gallery-img {
+    height: 190px;
   }
 }
 
 @media (max-width: 767px) {
   .u-section-2 .u-sheet-1 {
-    min-height: 900px;
+    min-height: 1425px;
   }
 
   .u-section-2 .u-text-2 {
     width: 540px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 540px;
+    grid-template-columns: 1fr;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-template-columns: 1fr;
-    grid-auto-rows: 260px;
+  .u-section-2 .u-home-gallery-img {
+    height: 300px;
   }
 }
 
 @media (max-width: 575px) {
+  .u-section-2 .u-sheet-1 {
+    min-height: 1235px;
+  }
+
   .u-section-2 .u-text-2 {
     width: 340px;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 340px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-auto-rows: 200px;
+  .u-section-2 .u-home-gallery-img {
+    height: 200px;
   }
 }"""
     write_css("Team-Gallery.css", tpl_css("_gallery_sec1.css") + "\n\n" + sec2)
