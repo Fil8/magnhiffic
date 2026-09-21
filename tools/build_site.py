@@ -103,8 +103,7 @@ LOGO_IMAGE = None
 # MHONGOOSE-side grant. Replace the text below with MAGNHIFFIC's own funding
 # acknowledgement if the funder differs. The ERC/EU flag logo has been removed
 # from the footer (see footer()).
-FUNDING = ('MAGNHIFFIC is supported by INAF \u2013 Istituto Nazionale di Astrofisica. '
-           '[Funding acknowledgement to be completed \u2013 see REVIEW_NOTES.md]&nbsp;')
+FUNDING = 'MAGNHIFFIC is supported by INAF \u2013 Istituto Nazionale di Astrofisica.&nbsp;'
 
 NAV_LINK = ("u-button-style u-nav-link u-text-active-palette-1-base "
             "u-text-hover-palette-2-base")
@@ -1971,31 +1970,41 @@ def build_sample(rows):
 
 # -------------------------------------------------------------- Publications
 
-# NOTE FOR REVIEW: MAGNHIFFIC has no published survey papers yet in the material
-# supplied. The entries below are the sample-selection references cited on the
-# Science page, listed as "background papers". Add MAGNHIFFIC papers here as they
-# appear; the page renders any number of entries.
+# Papers using MAGNHIFFIC data itself. Add entries as (auth, title, url); the
+# page renders any number.
+PUB_PROJECT = [
+    ("Santana et al. (2025)",
+     "MeerKAT discovery of an infalling cold gas tail on to the nearby barred spiral galaxy, NGC 5643",
+     "https://ui.adsabs.harvard.edu/abs/2025MNRAS.540.2396S/abstract"),
+]
+
+# The sample-selection references cited on the Science page, listed as
+# "background papers". Add entries as (auth, title, url); the page renders
+# any number.
 PUB_BACKGROUND = [
-    ("Maccagni et al. (2018)",
-     "The flickering nuclear activity of Fornax A",
-     "https://ui.adsabs.harvard.edu/abs/2020A%26A...634A...9M/abstract"),
-    ("Mingozzi et al. (2018)",
-     "AGN-driven outflows and the AGN feedback efficiency in nearby galaxies",
+    ("Mingozzi et al. (2019)",
+     "The MAGNUM survey: different gas properties in the outflowing and disc components in nearby active galaxies with MUSE",
      "https://ui.adsabs.harvard.edu/abs/2019A%26A...622A.146M/abstract"),
     ("Ruffa et al. (2019a)",
-     "The AGN fuelling/feedback cycle in nearby radio galaxies",
+     "The AGN fuelling/feedback cycle in nearby radio galaxies I",
      "https://ui.adsabs.harvard.edu/abs/2019MNRAS.484.4239R/abstract"),
-    ("Venturi et al. (2020)",
-     "MAGNUM survey: compact jets causing large turmoil in galaxies",
+    ("Venturi et al. (2021)",
+     "The MAGNUM survey: compact jets causing large turmoil in galaxies",
      "https://ui.adsabs.harvard.edu/abs/2021A%26A...648A..17V/abstract"),
 ]
 
 
-def build_publications():
+def _pub_entries(papers):
     entries = ""
-    for i, (auth, title, url) in enumerate(PUB_BACKGROUND, 1):
-        entries += ('\n                    %s<br>%s<br>%s<br>\n                    <br>'
-                    % (title, auth, link(url, url, i, external=True)))
+    for i, (auth, title, url) in enumerate(papers, 1):
+        entries += ('\n                    %s, %s<br>\n                    <br>'
+                    % (title, link(url, auth, i, external=True)))
+    return entries
+
+
+def build_publications():
+    project_entries = _pub_entries(PUB_PROJECT)
+    background_entries = _pub_entries(PUB_BACKGROUND)
 
     s1 = """<section class="u-black u-clearfix u-section-1" id="carousel_0fe1">
       <div class="u-clearfix u-sheet u-sheet-1">
@@ -2005,9 +2014,11 @@ def build_publications():
               <div class="u-container-style u-layout-cell u-size-60 u-layout-cell-1">
                 <div class="u-container-layout u-container-layout-1">
                   <h2 class="u-text u-text-1">Publications</h2>
-                  <h4 class="u-align-center u-text u-text-2">Survey papers</h4>
-                  <p class="u-align-justify u-text u-text-3">The MAGNHIFFIC survey description paper and the first results papers are in preparation. This page will list all papers published or accepted using MAGNHIFFIC data.<br>
+                  <h4 class="u-align-center u-text u-text-2">Project papers</h4>
+                  <p class="u-align-justify u-text u-text-3"><br>
                     <br>
+                  </p>
+                  <p class="u-align-left u-text u-text-6">%s
                   </p>
                   <h4 class="u-align-center u-text u-text-4">Background papers</h4>
                   <p class="u-align-justify u-text u-text-5">The papers below present the molecular and ionised gas observations on which the MAGNHIFFIC sample selection is based.<br>
@@ -2021,7 +2032,7 @@ def build_publications():
           </div>
         </div>
       </div>
-    </section>""" % entries
+    </section>""" % (project_entries, background_entries)
 
     desc = "Publications of the MAGNHIFFIC survey and the background papers behind its sample selection."
     write("Publications.html", page("Publications", "Publications.css", [s1], desc))
@@ -2111,12 +2122,15 @@ def build_publications():
 
 # ---------------------------------------------------------------------- Team
 
-# NOTE FOR REVIEW: only the PI is known from the material supplied. Add team
-# members as "Name, Institute, Country" strings; the page renders any number.
+# Add team members as "Name, Institute, Country" strings; the page renders
+# any number.
 TEAM = [
     "Filippo M. Maccagni (PI), INAF \u2013 Osservatorio Astronomico di Cagliari, Italy",
-    "[Add team member: Name, Institute, Country]",
-    "[Add team member: Name, Institute, Country]",
+    "Julia Healy, University of Manchester, UK",
+    "Alessandro Loni, INAF - Osservatorio di Capodimonte, Italy",
+    "Spheshile Makhathini, University of Witswatersrand (WITS), South Africa",
+    "Rossella Ragusa, INAF - Osservatorio di Capodimonte, Italy",
+    "Karina Santana, University of Witswatersrand (WITS), South Africa",
 ]
 
 
