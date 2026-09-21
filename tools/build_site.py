@@ -1775,6 +1775,17 @@ PUB_PROJECT = [
      "https://ui.adsabs.harvard.edu/abs/2025MNRAS.540.2396S/abstract"),
 ]
 
+# Papers by others that USE MAGNHIFFIC observations, as distinct from
+# PUB_PROJECT (the survey's own papers). Add entries as (auth, title, url);
+# the page renders any number, and the section disappears if the list is
+# emptied.
+PUB_USING = [
+    ("Marasco et al. (2025)",
+     "HI within and around observed and simulated galaxy discs: Comparing "
+     "MeerKAT observations with mock data from TNG50 and FIRE-2",
+     "https://ui.adsabs.harvard.edu/abs/2025A%26A...697A..86M/abstract"),
+]
+
 # The sample-selection references cited on the Science page, listed as
 # "background papers". Add entries as (auth, title, url); the page renders
 # any number.
@@ -1801,7 +1812,18 @@ def _pub_entries(papers):
 
 def build_publications():
     project_entries = _pub_entries(PUB_PROJECT)
+    using_entries = _pub_entries(PUB_USING)
     background_entries = _pub_entries(PUB_BACKGROUND)
+
+    # The middle section is dropped entirely when PUB_USING is empty, rather
+    # than leaving a heading with nothing under it.
+    using_block = ""
+    if PUB_USING:
+        using_block = (
+            '\n                  <h4 class="u-align-center u-text u-text-4">'
+            'Papers using MAGNHIFFIC observations</h4>'
+            '\n                  <p class="u-align-left u-text u-text-6">%s'
+            '\n                  </p>' % using_entries)
 
     s1 = """<section class="u-black u-clearfix u-section-1" id="carousel_0fe1">
       <div class="u-clearfix u-sheet u-sheet-1">
@@ -1816,7 +1838,7 @@ def build_publications():
                     <br>
                   </p>
                   <p class="u-align-left u-text u-text-6">%s
-                  </p>
+                  </p>%s
                   <h4 class="u-align-center u-text u-text-4">Background papers</h4>
                   <p class="u-align-justify u-text u-text-5">The papers below present the molecular and ionised gas observations on which the MAGNHIFFIC sample selection is based.<br>
                     <br>
@@ -1829,7 +1851,7 @@ def build_publications():
           </div>
         </div>
       </div>
-    </section>""" % (project_entries, background_entries)
+    </section>""" % (project_entries, using_block, background_entries)
 
     desc = "Publications of the MAGNHIFFIC survey and the background papers behind its sample selection."
     write("Publications.html", page("Publications", "Publications.css", [s1], desc))
