@@ -2181,13 +2181,9 @@ def build_public_data():
     body = (
         'MAGNHIFFIC observations are on-going. Public data releases \u2014 HI data '
         'cubes and moment maps of the survey targets \u2014 will be announced on this '
-        'page as they become available, together with the release documentation '
-        'describing the resolutions, sensitivities and reduction strategy '
-        'used.&nbsp;<br>'
+        'page as they become available.&nbsp;<br>'
         '<br>Team members can access the internal data products via the '
-        '%s page.&nbsp;<br>'
-        '<br>[Placeholder \u2014 replace with the first public release description '
-        'and repository link when available; see REVIEW_NOTES.md]&nbsp;'
+        '%s page.&nbsp;'
         % link("Data.html", "Team Data", 1))
 
     s2 = """<section class="u-black u-clearfix u-section-2" id="carousel_1c2e">
