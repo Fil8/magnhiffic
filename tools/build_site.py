@@ -216,7 +216,17 @@ def head(title, css, description=""):
         description, title, css, google_fonts_url(), ACCENT, title, description)
 
 
-def page(title, css, sections, description="", body_class="u-body"):
+def page(title, css, sections, description="", body_class="u-body u-xl-mode"):
+    """Wrap sections in the shared head/header/footer.
+
+    u-xl-mode is load-bearing, not decoration: nicepage sizes the content
+    sheet from --theme-sheet-width-* variables, but above 1199px every rule
+    that sets a width is either gated behind .u-xl-mode or reads
+    --theme-sheet-width-xxl, which the framework never defines.  Without the
+    class the sheet has no width at all on a desktop screen and the content
+    runs edge to edge with no gutter.  The gated pages already carry it (see
+    gate_body_attrs), which is why only the public pages were affected.
+    """
     return "%s\n  <body class=\"%s\">\n    %s\n    %s\n    %s\n  \n</body></html>\n" % (
         head(title, css, description), body_class, header(),
         "\n    ".join(sections), footer())
