@@ -2250,72 +2250,13 @@ def build_public_data():
       </div>
     </section>""" % body
 
-    s3 = """<section class="u-align-center u-black u-clearfix u-section-3" id="sec-9d61">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <img class="u-image u-image-contain u-image-default u-preserve-proportions u-image-1" src="images/fornaxAcontHI.jpg" alt="" data-image-width="671" data-image-height="582">
-        <p class="u-align-center u-small-text u-text u-text-variant u-text-1">Fornax A: MeerKAT HI (contours) on the radio continuum.</p>
-      </div>
-    </section>"""
-
     desc = "MAGNHIFFIC public data releases: HI data cubes and moment maps."
     write("Public-Data-Release.html",
           page("Public Data Release", "Public-Data-Release.css",
-               [s1, s2, s3], desc))
+               [s1, s2], desc))
     write_css("Public-Data-Release.css",
               tpl_css("_public_data_release_sec1.css") + "\n\n" +
-              tpl_css("_public_data_release_sec2.css") + "\n\n" +
-              """ .u-section-3 {
-  background-image: none;
-}
-
-.u-section-3 .u-sheet-1 {
-  min-height: 640px;
-}
-
-.u-section-3 .u-image-1 {
-  width: 520px;
-  margin: 40px auto 0;
-}
-
-.u-section-3 .u-text-1 {
-  margin: 14px auto 40px;
-}
-
-@media (max-width: 1199px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 560px;
-  }
-
-  .u-section-3 .u-image-1 {
-    width: 440px;
-  }
-}
-
-@media (max-width: 991px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 480px;
-  }
-
-  .u-section-3 .u-image-1 {
-    width: 360px;
-  }
-}
-
-@media (max-width: 767px) {
-  .u-section-3 .u-sheet-1 {
-    min-height: 420px;
-  }
-
-  .u-section-3 .u-image-1 {
-    width: 300px;
-  }
-}
-
-@media (max-width: 575px) {
-  .u-section-3 .u-image-1 {
-    width: 260px;
-  }
-}""")
+              tpl_css("_public_data_release_sec2.css"))
 
 
 # ------------------------------------------------------------------- Contact
