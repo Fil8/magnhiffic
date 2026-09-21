@@ -600,38 +600,32 @@ def home_sec2_css():
   margin: 82px 0 0;
 }
 
-.u-section-2 .u-gallery-1 {
+/* Each image keeps the size the framework gallery gave it; the title is a
+   plain line above the picture rather than an overlay on top of it. */
+.u-section-2 .u-home-gallery {
+  display: flex;
+  gap: 10px;
   width: 1140px;
-  height: 240px;
   margin: 14px auto 60px 0;
 }
 
-.u-section-2 .u-gallery-inner-1 {
-  grid-template-columns: repeat(3, auto);
-  grid-gap: 10px;
+.u-section-2 .u-home-gallery-item {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
 }
 
-.u-section-2 .u-over-slide-1,
-.u-section-2 .u-over-slide-2,
-.u-section-2 .u-over-slide-3 {
-  background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
-  padding: 20px;
+.u-section-2 .u-home-gallery-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 6px;
 }
 
-/* Captions stay on screen instead of the framework's hover-only reveal. */
-.u-section-2 .u-gallery-1 .u-over-slide {
-  opacity: 1;
-}
-
-.u-section-2 .u-gallery-heading {
-  color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-.u-section-2 .u-gallery-item-2,
-.u-section-2 .u-gallery-item-3 {
-  margin-top: 0;
-  margin-bottom: 0;
+.u-section-2 .u-home-gallery-img {
+  display: block;
+  width: 100%%;
+  height: 240px;
+  object-fit: cover;
 }
 
 /* Breakpoints follow the framework's own layout grid: the two cells sit side
@@ -665,8 +659,11 @@ def home_sec2_css():
     height: %(icon1199)dpx;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 940px;
+  }
+
+  .u-section-2 .u-home-gallery-img {
     height: 198px;
   }
 }
@@ -709,13 +706,12 @@ def home_sec2_css():
     font-size: 0.6875rem;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 720px;
-    height: 455px;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-template-columns: repeat(2, auto);
+  .u-section-2 .u-home-gallery-img {
+    height: 222px;
   }
 }
 
@@ -753,13 +749,13 @@ def home_sec2_css():
     font-size: 0.8125rem;
   }
 
-  .u-section-2 .u-gallery-1 {
+  .u-section-2 .u-home-gallery {
     width: 540px;
-    height: 1024px;
+    flex-direction: column;
   }
 
-  .u-section-2 .u-gallery-inner-1 {
-    grid-template-columns: repeat(1, auto);
+  .u-section-2 .u-home-gallery-img {
+    height: 335px;
   }
 }
 
@@ -901,6 +897,16 @@ def gallery_items(announce=False):
     return items
 
 
+def home_gallery_strip(items):
+    figs = "".join(
+        '\n          <figure class="u-home-gallery-item">'
+        '\n            <figcaption class="u-home-gallery-label">%s</figcaption>'
+        '\n            <img class="u-home-gallery-img" src="images/%s" alt="%s">'
+        '\n          </figure>' % (title, img, title)
+        for img, title in items)
+    return '<div class="u-home-gallery">%s\n        </div>' % figs
+
+
 MEERKAT_LINK_ATTRS =('class="u-active-none u-border-none u-btn u-button-link '
                       'u-button-style u-hover-none u-none u-text-palette-1-base '
                       'u-btn-%d" target="_blank"')
@@ -937,7 +943,7 @@ def build_home():
       </div>
     </section>""" % (WORDMARK_FULL, HOME_BLURB.replace("{MEERKAT}", meerkat(1)))
 
-    gal = gallery([(f, t, "") for f, t in gallery_items(announce=True)])
+    gal = home_gallery_strip(gallery_items(announce=True))
 
     # Section 2 of the old layout (the "Information on MAGNHIFFIC" card grid) is
     # gone: its five buttons now live in the star, in the right-hand cell here.
@@ -2770,7 +2776,30 @@ def build_public_gallery():
     grid-auto-rows: 200px;
   }
 }"""
-    write_css("Gallery.css", tpl_css("_gallery_sec1.css") + "\n\n" + sec2)
+    # Deliberately not _gallery_sec1.css: that one paints the old Fornax A
+    # HI image as a non-covering background, which tiles down the banner.
+    sec1 = """ .u-section-1 {
+  background-image: none;
+}
+
+.u-section-1 .u-sheet-1 {
+  min-height: 180px;
+}
+
+.u-section-1 .u-text-1 {
+  margin: 60px auto 0;
+}
+
+.u-section-1 .u-text-2 {
+  margin: 14px auto 40px;
+}
+
+@media (max-width: 767px) {
+  .u-section-1 .u-sheet-1 {
+    min-height: 150px;
+  }
+}"""
+    write_css("Gallery.css", sec1 + "\n\n" + sec2)
 
 
 # ---- Team Gallery (password protected, linked from the Team Data hub)
