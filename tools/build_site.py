@@ -83,15 +83,15 @@ NAV = [
                                                  ("Observations.html", "Observations"),
                                                  ("Public-Data-Release.html", "Data")]),
     ("Publications.html",        "Publications",[]),
-    ("Team.html",                "Team",        [("Data.html",     "Team Data"),
-                                                 ("Gallery.html",  "Gallery"),
-                                                 ("Releases.html", "Releases"),
-                                                 ("Projects.html", "Projects")]),
+    ("Team.html",                "Team",        []),
 ]
 # Contact.html and Public-Data-Release.html are still built (build_contact,
 # build_public_data) but no longer linked from the nav -- Contact isn't
 # linked from anywhere else either (reachable only by direct URL); Public
 # Data is reachable via the "Data" dropdown item above, which points at it.
+# Team Data, Gallery, Releases and Projects are no longer linked from the
+# Team nav dropdown either (Team now points straight at Team.html); they
+# stay reachable via the cards on the Team Data page (see DATA_CARDS).
 
 WORDMARK_FULL = "MeerKAT AGN HI Feeding &amp; Feedback Investigation Close-by"
 
