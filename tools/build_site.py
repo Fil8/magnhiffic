@@ -1378,11 +1378,7 @@ SAMPLE_INTRO = (
     'The table below lists the {N} active galaxies in the MAGNHIFFIC sample and '
     'its reference subsamples. An '
     '{ASCII} of this table is also available. Each object name links to its entry '
-    'in {NED}.&nbsp;<br>'
-    '<br>Column densities and distances assume H'
-    '<span style="font-size: 0.75rem;">0</span>&nbsp;=&nbsp;67.8 km s'
-    '<span style="font-size: 0.75rem;">\u22121</span> Mpc'
-    '<span style="font-size: 0.75rem;">\u22121</span>.&nbsp;'
+    'in {NED}.&nbsp;'
     '<br><br>{GROUPS} Rows are grouped by subsample and, within each group, '
     'sorted by increasing luminosity distance. {LEGEND}')
 
@@ -1681,7 +1677,7 @@ def build_sample(rows):
              .replace("{NED}", "NED"))
     s1 = """<section class="u-align-center u-black u-clearfix u-section-1" id="carousel_ddcf">
       <div class="u-clearfix u-sheet u-sheet-1">
-        <h2 class="u-align-left u-text u-text-1">Sample List</h2>
+        <h2 class="u-align-left u-text u-text-1">Sample</h2>
         <p class="u-align-left u-text u-text-2">%s</p>
       </div>
     </section>""" % intro
