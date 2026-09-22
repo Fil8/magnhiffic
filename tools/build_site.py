@@ -1976,10 +1976,13 @@ TEAM = [
     "Erwin de Blok, ASTRON, the Netherlands",
     "Julia Healy, University of Manchester, UK",
     "Alessandro Loni, INAF - Osservatorio di Capodimonte, Italy",
+    "Massimo Gaspari, Universita' di Modena, Italy",
     "Spheshile Makhathini, University of Witswatersrand (WITS), South Africa",
     "Isabella Prandoni, INAF - Istituto di Radioastronomia, Italy",
     "Rossella Ragusa, INAF - Osservatorio di Capodimonte, Italy",
     "Karina Santana, University of Witswatersrand (WITS), South Africa",
+    "Paolo Serra, INAF - Osservatorio Astronomico di Cagliari, Italy",
+    "Giacomo Venturi, INAF - Osservatorio di Astrofisica di Arcetri, Italy"
 ]
 
 
