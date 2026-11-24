@@ -1228,6 +1228,22 @@ SCI_PROJECTS = [
       "understand the duty-cycle of AGN"]),
 ]
 
+# Caption of the sensitivity figure (beamNhiwhiteNo.jpg), shared by the Science
+# page and the Team Gallery.
+SENS_FIG_CAPTION = (
+    "HI column density sensitivity (3&sigma; over 16 km/s) of the MAGNHIFFIC "
+    "MeerKAT observations as a function of spatial resolution. For comparison: "
+    "HI absorption surveys (VG89: van Gorkom et al. 1989; G99: Gallimore et al. "
+    "1999; G15+M17: Gereb et al. 2015, Maccagni et al. 2017), HI emission in "
+    "early-type galaxies (E10: Emonts et al. 2010; A3D: ATLAS<sup>3D</sup>, "
+    "Serra et al. 2012), and deep published observations of individual AGN "
+    "(Centaurus A: Struve et al. 2010; IC 5063: Morganti et al. 1998; "
+    "PKS 1718-649: Maccagni et al. 2014; NGC 3100: van Gorkom et al. 1989; "
+    "Fornax A: Horellou et al. 2001; NGC 1052: van Gorkom et al. 1986). "
+    "MAGNHIFFIC reaches 10<sup>18</sup> cm<sup>&minus;2</sup> on kpc scales, "
+    "so it can trace HI from the circum-nuclear regions out to the "
+    "circum-galactic medium.")
+
 
 def build_science():
     """One two-column band: the projects on the left, the figures stacked
@@ -1247,13 +1263,17 @@ def build_science():
     left = ('<p class="u-text u-text-2">MAGNHIFFIC is organised around three '
             'complementary projects</p>%s' % proj_html)
 
+    # (image, width, height, caption or None); the caption sits under its image.
     figs = "".join(
         '\n                  <img class="u-image u-image-contain '
         'u-image-default u-preserve-proportions u-image-%d" src="images/%s" '
-        'alt="" data-image-width="%d" data-image-height="%d">'
-        % (n, f, w, h)
-        for n, (f, w, h) in enumerate(
-            [("sensPlot.png", 1100, 1100), ("fornaxAcontHI.jpg", 671, 582)], 1))
+        'alt="" data-image-width="%d" data-image-height="%d">%s'
+        % (n, f, w, h,
+           '\n                  <p class="u-text u-science-caption">%s</p>' % cap
+           if cap else "")
+        for n, (f, w, h, cap) in enumerate(
+            [("beamNhiwhiteNo.jpg", 1600, 1600, SENS_FIG_CAPTION),
+             ("fornaxAcontHI.jpg", 671, 582, None)], 1))
 
     s1 = """<section class="u-black u-clearfix u-section-1" id="sec-d121">
       <div class="u-clearfix u-sheet u-sheet-1">
@@ -1315,6 +1335,15 @@ def build_science():
 
 .u-section-1 .u-image-2 {
   margin-top: 40px;
+}
+
+/* Same size as the Team Gallery captions. */
+.u-section-1 .u-science-caption {
+  max-width: 500px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  margin: 10px auto 0;
+  text-align: left;
 }
 
 .u-section-1 .u-text-2 {
@@ -2583,14 +2612,7 @@ def build_gallery():
          "MeerKAT HI (contours) overlaid on the radio continuum of Fornax A "
          "(NGC 1316), showing the cold gas around the restarted radio source."),
         ("beamNhiwhiteNo.jpg", "Column density vs resolution",
-         "HI column density sensitivity (3&sigma; over 16 km/s) of the "
-         "MAGNHIFFIC MeerKAT observations as a function of spatial resolution "
-         "(lines join the beam sizes of each source). Literature: HI absorption "
-         "surveys by van Gorkom et al. (1989, VG89), Gallimore et al. (1999, "
-         "G99), Gereb et al. (2015) and Maccagni et al. (2017) (G15+M17); "
-         "HI emission in early-type galaxies by Emonts et al. (2010, E10) and "
-         "ATLAS<sup>3D</sup> (Serra et al. 2012, A3D); &ldquo;single "
-         "objects&rdquo; are deep published observations of individual AGN."),
+         SENS_FIG_CAPTION),
         ("2018-MeerKAT-1-1030x557.jpg", "MeerKAT",
          "The MeerKAT array in the Karoo, South Africa. Image credit: SARAO."),
     ]

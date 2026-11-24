@@ -36,6 +36,15 @@
   margin-top: 40px;
 }
 
+/* Same size as the Team Gallery captions. */
+.u-section-1 .u-science-caption {
+  max-width: 500px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  margin: 10px auto 0;
+  text-align: left;
+}
+
 .u-section-1 .u-text-2 {
   font-weight: 300;
   font-size: 1.125rem;

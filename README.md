@@ -116,11 +116,14 @@ is rendered to a raster in `docs/images/` and it is that raster the pages
 reference — keep the source here so the rendering can be redone at a different
 size, or the figure regenerated from it.
 
-`figures/sensPlot.pdf` is the column-density-vs-resolution plot on the Science
-page. It was rendered at roughly 2.5x its 560px display width with:
+The column-density-vs-resolution plot on the Science page and in the Team
+Gallery is `docs/images/beamNhiwhiteNo.jpg`. Its source is deBlokPlot's
+`notebooks/deBlokPlot/figures/sensRes_AGN_agnHI.png` (outside this repo);
+re-convert it whenever that figure is redrawn, then rebuild:
 
-    pdftoppm -png -r 200 figures/sensPlot.pdf /tmp/sensPlot
-    sips -Z 1100 /tmp/sensPlot-1.png --out docs/images/sensPlot.png
+    sips -s format jpeg -s formatOptions 90 -Z 1600 \
+        ../notebooks/deBlokPlot/figures/sensRes_AGN_agnHI.png \
+        --out docs/images/beamNhiwhiteNo.jpg
 
 `docs/images/` also holds photographs and survey images that have no PDF source;
 those are simply the originals.
