@@ -1974,9 +1974,10 @@ def build_publications():
 TEAM = [
     "Filippo M. Maccagni, INAF \u2013 Osservatorio Astronomico di Cagliari, Italy",
     "Erwin de Blok, ASTRON, the Netherlands",
-    "Julia Healy, University of Manchester, UK",
-    "Alessandro Loni, INAF - Osservatorio di Capodimonte, Italy",
     "Massimo Gaspari, Universita' di Modena, Italy",
+    "Julia Healy, University of Manchester, UK",
+    "Peter Kamphuis, Instituto de Astrofisica de Andalusia (IAA), Spain",
+    "Alessandro Loni, INAF - Osservatorio di Capodimonte, Italy",
     "Spheshile Makhathini, University of Witswatersrand (WITS), South Africa",
     "Isabella Prandoni, INAF - Istituto di Radioastronomia, Italy",
     "Rossella Ragusa, INAF - Osservatorio di Capodimonte, Italy",
@@ -2582,8 +2583,14 @@ def build_gallery():
          "MeerKAT HI (contours) overlaid on the radio continuum of Fornax A "
          "(NGC 1316), showing the cold gas around the restarted radio source."),
         ("beamNhiwhiteNo.jpg", "Column density vs resolution",
-         "HI column density sensitivity reached by MAGNHIFFIC as a function of "
-         "angular resolution, compared with existing observations."),
+         "HI column density sensitivity (3&sigma; over 16 km/s) of the "
+         "MAGNHIFFIC MeerKAT observations as a function of spatial resolution "
+         "(lines join the beam sizes of each source). Literature: HI absorption "
+         "surveys by van Gorkom et al. (1989, VG89), Gallimore et al. (1999, "
+         "G99), Gereb et al. (2015) and Maccagni et al. (2017) (G15+M17); "
+         "HI emission in early-type galaxies by Emonts et al. (2010, E10) and "
+         "ATLAS<sup>3D</sup> (Serra et al. 2012, A3D); &ldquo;single "
+         "objects&rdquo; are deep published observations of individual AGN."),
         ("2018-MeerKAT-1-1030x557.jpg", "MeerKAT",
          "The MeerKAT array in the Karoo, South Africa. Image credit: SARAO."),
     ]
