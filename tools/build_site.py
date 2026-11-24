@@ -1228,9 +1228,8 @@ SCI_PROJECTS = [
       "understand the duty-cycle of AGN"]),
 ]
 
-# Caption of the sensitivity figure (beamNhiwhiteNo.jpg), shared by the Science
-# page and the Team Gallery.
-SENS_FIG_CAPTION = (
+# Caption under the sensitivity figure (beamNhiwhiteNo.jpg) on the Science page.
+SCIENCE_SENS_CAPTION = (
     "HI column density sensitivity (3&sigma; over 16 km/s) of the MAGNHIFFIC "
     "MeerKAT observations as a function of spatial resolution. For comparison: "
     "HI absorption surveys (VG89: van Gorkom et al. 1989; G99: Gallimore et al. "
@@ -1238,7 +1237,7 @@ SENS_FIG_CAPTION = (
     "early-type galaxies (E10: Emonts et al. 2010; A3D: ATLAS<sup>3D</sup>, "
     "Serra et al. 2012), and deep published observations of individual AGN "
     "(Centaurus A: Struve et al. 2010; IC 5063: Morganti et al. 1998; "
-    "PKS 1718-649: Maccagni et al. 2014; NGC 3100: van Gorkom et al. 1989; "
+    "PKS 1718-649: Maccagni et al. 2014; NGC 3100: Maccagni et al. 2023; "
     "Fornax A: Horellou et al. 2001; NGC 1052: van Gorkom et al. 1986). "
     "MAGNHIFFIC reaches 10<sup>18</sup> cm<sup>&minus;2</sup> on kpc scales, "
     "so it can trace HI from the circum-nuclear regions out to the "
@@ -1272,7 +1271,7 @@ def build_science():
            '\n                  <p class="u-text u-science-caption">%s</p>' % cap
            if cap else "")
         for n, (f, w, h, cap) in enumerate(
-            [("beamNhiwhiteNo.jpg", 1600, 1600, SENS_FIG_CAPTION),
+            [("beamNhiwhiteNo.jpg", 1600, 1600, SCIENCE_SENS_CAPTION),
              ("fornaxAcontHI.jpg", 671, 582, None)], 1))
 
     s1 = """<section class="u-black u-clearfix u-section-1" id="sec-d121">
@@ -2611,8 +2610,6 @@ def build_gallery():
         ("fornaxAcontHI.jpg", "Fornax A",
          "MeerKAT HI (contours) overlaid on the radio continuum of Fornax A "
          "(NGC 1316), showing the cold gas around the restarted radio source."),
-        ("beamNhiwhiteNo.jpg", "Column density vs resolution",
-         SENS_FIG_CAPTION),
         ("2018-MeerKAT-1-1030x557.jpg", "MeerKAT",
          "The MeerKAT array in the Karoo, South Africa. Image credit: SARAO."),
     ]

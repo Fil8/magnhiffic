@@ -116,8 +116,8 @@ is rendered to a raster in `docs/images/` and it is that raster the pages
 reference — keep the source here so the rendering can be redone at a different
 size, or the figure regenerated from it.
 
-The column-density-vs-resolution plot on the Science page and in the Team
-Gallery is `docs/images/beamNhiwhiteNo.jpg`. Its source is deBlokPlot's
+The column-density-vs-resolution plot on the Science page is
+`docs/images/beamNhiwhiteNo.jpg`. Its source is deBlokPlot's
 `notebooks/deBlokPlot/figures/sensRes_AGN_agnHI.png` (outside this repo);
 re-convert it whenever that figure is redrawn, then rebuild:
 
